@@ -1,81 +1,81 @@
 #!/bin/bash
 
-# Cargar variables de entorno desde .env si existe
-if [ -f ".env" ]; then
-  export $(cat .env | grep -v '#' | xargs)
-fi
+echo "🔧 Iniciando setup del proyecto Django + MySQL..."
 
-# Verificar variables de entorno necesarias
-if [ -z "${DB_USER}" ] || [ -z "${DB_PASSWORD}" ] || [ -z "${DB_NAME}" ] || [ -z "${DB_PORT}" ] || [ -z "${DB_PASSWORD_ROOT}" ]; then
-  echo "❌ Error: Faltan variables de entorno requeridas"
-  echo "Por favor, asegúrate de que las siguientes variables estén definidas:"
-  echo "DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, DB_PASSWORD_ROOT"
-  exit 1
-fi
+# 2. Levantar base de datos con Docker Compose
+echo "🐬 Levantando MySQL con Docker Compose..."
+docker compose --env-file ./Proyecto/.env up -d
 
-echo "🔧 Iniciando setup del proyecto..."
 
-# 1. Levantar base de datos con Docker Compose
-echo "🐘 Levantando MySql con Docker Compose..."
-if command -v docker-compose >/dev/null 2>&1; then
-  docker-compose up -d
-  # docker compose --env-file /ruta/personalizada/.env up -d
-else
-  docker compose up -d
-fi
+# Esperar a que MySQL esté listo
+echo "⏳ Esperando a que MySQL esté listo..."
+sleep 10
 
-# Esperar unos segundos a que MySql esté listo
-echo "⏳ Esperando a que la base de datos esté lista..."
-sleep 5
-
-# 2. Ejecutar el script SQL de inicialización
+# 3. Ejecutar el script SQL de inicialización (si existe)
 if [ -f "Proyecto/Backend/cmd/bd/init.sql" ]; then
   echo "📄 Ejecutando script SQL de inicialización..."
-  # Usando las variables de entorno definidas
-  docker exec -i mysql_container mysql -u "${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" < Proyecto/Backend/cmd/bd/init.sql
+  docker exec -i mysql-demo-compose mysql -u testuser -ppassword testdb < ./Proyecto/Backend/cmd/db/init.sql
+  # docker exec -it mysql-demo-compose mysql -h 127.0.0.1 -u testuser -ppassword testdb < ./Proyecto/Backend/cmd/db/init.sql
+  echo "✅ Script SQL ejecutado"
 else
-  echo "⚠️ No se encontró init.sql en Proyecto/Backend/cmd/bd/"
+  echo "⚠️  No se encontró init.sql en Proyecto/Backend/cmd/bd/"
 fi
 
-# 3. Backend (Python)
-echo "📦 Configurando Backend en Python"
+# 4. Configurar entorno virtual de Python
+echo "🐍 Configurando entorno virtual de Python..."
 cd Proyecto/Backend || exit
 
-# Crear entorno virtual si no existe
 if [ ! -d "venv" ]; then
-  echo "🐍 Creando entorno virtual de Python..."
-  python -m venv venv
+  python3 -m venv venv
+  echo "✅ Entorno virtual creado"
 fi
 
 # Activar entorno virtual
-echo "🔄 Activando entorno virtual..."
-source venv/Scripts/activate
+source venv/bin/activate
 
-# Instalar dependencias si existe requirements.txt
-if [ -f "requirements.txt" ]; then
-  echo "📦 Instalando dependencias de Python..."
-  pip install -r requirements.txt
-else
-  echo "⚠️ No se encontró requirements.txt"
+# 5. Instalar dependencias
+echo "📦 Instalando dependencias de Python..."
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. Crear proyecto Django si no existe
+if [ ! -f "manage.py" ]; then
+  echo "🎯 Creando proyecto Django..."
+  django-admin startproject backend .
+  echo "✅ Proyecto Django creado"
+fi
+
+# 7. Crear app 'core' si no existe
+if [ ! -d "core" ]; then
+  echo "📱 Creando app 'core'..."
+  python manage.py startapp core
+  echo "✅ App 'core' creada"
+  echo "⚠️  Recuerda agregar 'core' a INSTALLED_APPS en settings.py"
+fi
+
+# 8. Aplicar migraciones
+echo "🔄 Aplicando migraciones de Django..."
+python manage.py makemigrations
+python manage.py migrate
+
+# 9. Crear superusuario (opcional)
+echo ""
+read -p "¿Deseas crear un superusuario para Django admin? (s/n): " crear_super
+
+if [ "$crear_super" = "s" ] || [ "$crear_super" = "S" ]; then
+  python manage.py createsuperuser
 fi
 
 cd ../../
 
-# 4. Frontend (opcional)
-#read -p "¿Quieres usar Vue o React? (vue/react): " choice
-#
-#if [ "$choice" = "vue" ]; then
-#  echo "📦 Creando frontend con Vue..."
-#  cd Proyecto || exit
-#  npm create vue@latest Frontend
-#  cd ..
-#elif [ "$choice" = "react" ]; then
-#  echo "📦 Creando frontend con React..."
-#  cd Proyecto || exit
-#  npx create-react-app Frontend
-#  cd ..
-#else
-#  echo "⚠️ Opción no válida. No se instaló frontend."
-#fi
-
+echo ""
 echo "✅ Setup finalizado."
+echo ""
+echo "📌 Próximos pasos:"
+echo "   1. cd Proyecto/Backend"
+echo "   2. source venv/bin/activate"
+echo "   3. python test_connection.py  # Probar conexión a MySQL"
+echo "   4. python manage.py runserver # Iniciar servidor Django"
+echo ""
+echo "🌐 Django estará disponible en: http://127.0.0.1:8000"
+echo "🔧 Panel admin en: http://127.0.0.1:8000/admin"<
