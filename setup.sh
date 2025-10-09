@@ -21,31 +21,21 @@ else
   echo "⚠️  No se encontró init.sql en Proyecto/Backend/cmd/bd/"
 fi
 
-# 4. Configurar entorno virtual de Python
-echo "🐍 Configurando entorno virtual de Python..."
+# 4. Instalar dependencias de Python
 cd Proyecto/Backend || exit
-
-if [ ! -d "venv" ]; then
-  python3 -m venv venv
-  echo "✅ Entorno virtual creado"
-fi
-
-# Activar entorno virtual
-source venv/bin/activate
-
-# 5. Instalar dependencias
 echo "📦 Instalando dependencias de Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 6. Crear proyecto Django si no existe
+
+# 5. Crear proyecto Django si no existe
 if [ ! -f "manage.py" ]; then
   echo "🎯 Creando proyecto Django..."
   django-admin startproject backend .
   echo "✅ Proyecto Django creado"
 fi
 
-# 7. Crear app 'core' si no existe
+# 6. Crear app 'core' si no existe
 if [ ! -d "core" ]; then
   echo "📱 Creando app 'core'..."
   python manage.py startapp core
@@ -53,18 +43,11 @@ if [ ! -d "core" ]; then
   echo "⚠️  Recuerda agregar 'core' a INSTALLED_APPS en settings.py"
 fi
 
-# 8. Aplicar migraciones
+# 7. Aplicar migraciones
 echo "🔄 Aplicando migraciones de Django..."
 python manage.py makemigrations
 python manage.py migrate
 
-# 9. Crear superusuario (opcional)
-echo ""
-read -p "¿Deseas crear un superusuario para Django admin? (s/n): " crear_super
-
-if [ "$crear_super" = "s" ] || [ "$crear_super" = "S" ]; then
-  python manage.py createsuperuser
-fi
 
 cd ../../
 
@@ -78,4 +61,4 @@ echo "   3. python test_connection.py  # Probar conexión a MySQL"
 echo "   4. python manage.py runserver # Iniciar servidor Django"
 echo ""
 echo "🌐 Django estará disponible en: http://127.0.0.1:8000"
-echo "🔧 Panel admin en: http://127.0.0.1:8000/admin"<
+echo "🔧 Panel admin en: http://127.0.0.1:8000/admin"
