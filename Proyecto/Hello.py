@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Script para probar la conexión a MySQL
-Equivalente a hello.go
-"""
+
 import os
 import sys
 from pathlib import Path
