@@ -5,9 +5,11 @@ rem 2. Levantar base de datos con Docker Compose
 echo "🐬 Levantando MySQL con Docker Compose..."
 docker compose up -d
 
+
 rem Esperar a que MySQL esté listo
 echo "⏳ Esperando a que MySQL esté listo..."
 timeout /t 10 > nul
+
 
 rem 3. Ejecutar el script SQL de inicialización (si existe)
 if exist "Proyecto/Backend/cmd/db/init.sql" (
@@ -26,6 +28,7 @@ echo "📦 Instalando dependencias de Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
+
 rem 5. Crear proyecto Django si no existe
 if not exist "manage.py" (
     echo "🎯 Creando proyecto Django..."
@@ -33,11 +36,7 @@ if not exist "manage.py" (
     echo "✅ Proyecto Django creado"
 )
 
-  
-rem 6. Aplicar migraciones
-echo "🔄 Aplicando migraciones de Django..."
-python manage.py makemigrations
-python manage.py migrate
+
 
 cd "../../"
 
@@ -52,6 +51,3 @@ echo "   4. python manage.py runserver # Iniciar servidor Django"
 echo ""
 echo "🌐 Django estará disponible en: http://127.0.0.1:8000"
 echo "🔧 Panel admin en: http://127.0.0.1:8000/admin"
-
-:: docker compose down -v
-pause
