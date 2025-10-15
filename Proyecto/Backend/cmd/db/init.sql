@@ -1,7 +1,7 @@
 CREATE TABLE `usuario` (
   `correo` varchar(255) PRIMARY KEY,
   `nombre` varchar(255) NOT NULL,
-  `contraseña` varchar(255) NOT NULL
+  `contrasena` varchar(255) NOT NULL
 );
 
 CREATE TABLE `receta` (
