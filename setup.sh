@@ -24,7 +24,7 @@ fi
 
 
 # 4. Instalar dependencias de Python
-cd Proyecto/Backend || exit
+cd Proyecto || exit
 echo "📦 Instalando dependencias de Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
@@ -33,12 +33,28 @@ pip install -r requirements.txt
 # 5. Crear proyecto Django si no existe
 if [ ! -f "manage.py" ]; then
   echo "🎯 Creando proyecto Django..."
-  django-admin startproject backend .
+  django-admin startproject CookShare .
   echo "✅ Proyecto Django creado"
 fi
 
 
-cd ../../
+# 6. Crear modulo core para MVC si no existe
+if [ ! -d "core" ]; then
+  echo "🎯 Creando modulo core para MVC..."
+  python manage.py startapp core
+  echo "✅ Modulo core creado"
+fi
+
+# 7. Crear estructura MVC dentro del modulo core
+mkdir core/models core/controllers core/views core/templates
+
+
+# 8. Crear archivo __init__.py en cada carpeta para que Python las reconozca como paquetes
+touch core/models/__init__.py
+touch core/controllers/__init__.py
+touch core/views/__init__.py
+touch core/templates/__init__.py
+
 
 echo ""
 echo "✅ Setup finalizado."
