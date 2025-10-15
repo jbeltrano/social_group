@@ -5,7 +5,7 @@ from .Usuario import Usuario  # importa el modelo usuario
 
 class Receta(models.Model):
     id = models.AutoField(primary_key=True)
-    creacion = models.DateTimeField(auto_now_add=True)
+    creacion = models.DateField(auto_now_add=True)
     nombre = models.CharField(max_length=255)
     imagen = models.BinaryField()  # equivalente a BLOB
     descripcion = models.TextField()

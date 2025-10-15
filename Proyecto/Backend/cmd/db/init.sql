@@ -6,7 +6,7 @@ CREATE TABLE `usuario` (
 
 CREATE TABLE `receta` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creacion` DATE NOT NULL DEFAULT CURRENT_DATE,
   `nombre` VARCHAR(255) NOT NULL,
   `imagen` BLOB NOT NULL,
   `descripcion` TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE `calificacion` (
   `correo` varchar(255),
   `numero` tinyint NOT NULL,
   `comentario` text,
-  `fecha` date NOT NULL,
+  `fecha` DATE NOT NULL DEFAULT CURRENT_DATE,
   PRIMARY KEY (`id`, `correo`)
 );
 
