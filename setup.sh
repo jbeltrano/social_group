@@ -9,7 +9,7 @@ docker compose up -d
 
 # Esperar a que MySQL esté listo
 echo "⏳ Esperando a que MySQL esté listo..."
-sleep 10
+sleep 60
 
 
 # 3. Ejecutar el script SQL de inicialización (si existe)
@@ -23,11 +23,23 @@ else
 fi
 
 
-# 4. Instalar dependencias de Python
+# 4. Configurando entorno virtual y instalacion de dependencias de Python
 cd Proyecto || exit
+
+# Crear entorno virtual si no existe
+if [ ! -d "venv" ]; then
+  echo "🌐 Creando entorno virtual..."
+  python3 -m venv venv
+  echo "✅ Entorno virtual creado"
+fi
+
+# Activar entorno virtual
+source venv/bin/activate
+
+# Instalar dependencias de Python
 echo "📦 Instalando dependencias de Python..."
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r Backend/requirements.txt
 
 
 # 5. Crear proyecto Django si no existe
@@ -37,13 +49,13 @@ if [ ! -f "manage.py" ]; then
   echo "✅ Proyecto Django creado"
 fi
 
-
-# 6. Crear modulo core para MVC si no existe
+# 6. Crear app core si no existe
 if [ ! -d "core" ]; then
-  echo "🎯 Creando modulo core para MVC..."
+  echo "🧩 Creando app core..."
   python manage.py startapp core
-  echo "✅ Modulo core creado"
+  echo "✅ App core creada"
 fi
+
 
 # 7. Crear estructura MVC dentro del modulo core
 mkdir core/models core/controllers core/views core/templates
@@ -60,9 +72,9 @@ echo ""
 echo "✅ Setup finalizado."
 echo ""
 echo "📌 Próximos pasos:"
-echo "   1. cd Proyecto/Backend"
-echo "   2. source venv/bin/activate"
-echo "   3. python test_connection.py  # Probar conexión a MySQL"
+echo "   1. Configurar la base de datos en CookShare/settings.py"
+echo "   2. Agregar 'core' a INSTALLED_APPS en CookShare/settings.py"
+echo "   3. Cargar las variables de entorno necesarias"
 echo "   4. python manage.py runserver # Iniciar servidor Django"
 echo ""
 echo "🌐 Django estará disponible en: http://127.0.0.1:8000"

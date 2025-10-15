@@ -5,18 +5,18 @@ CREATE TABLE `usuario` (
 );
 
 CREATE TABLE `receta` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `creacion` date NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `imagen` binary NOT NULL,
-  `descripcion` text NOT NULL,
-  `ingredientes` text NOT NULL,
-  `pasos` text NOT NULL,
-  `tiempo` time,
-  `porcion` tinyint,
-  `calificacion` tinyint,
-  `verificacion` bool,
-  `correo` varchar(255) NOT NULL
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `nombre` VARCHAR(255) NOT NULL,
+  `imagen` BLOB NOT NULL,
+  `descripcion` TEXT NOT NULL,
+  `ingredientes` TEXT NOT NULL,
+  `pasos` TEXT NOT NULL,
+  `tiempo` TIME,
+  `porcion` TINYINT,
+  `calificacion` TINYINT,
+  `verificacion` BOOL,
+  `correo` VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE `calificacion` (
