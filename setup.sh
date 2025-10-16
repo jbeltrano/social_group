@@ -67,10 +67,6 @@ touch core/controllers/__init__.py
 touch core/views/__init__.py
 touch core/templates/__init__.py
 
-# Ejecucion del programa
-xdg-open "http://127.0.0.1:8000/"
-python manage.py runserver
-
 
 echo ""
 echo "✅ Setup finalizado."
