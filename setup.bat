@@ -66,6 +66,10 @@ type nul > "core/controllers/__init__.py"
 type nul > "core/views/__init__.py"
 type nul > "core/templates/__init__.py"
 
+rem 9. Ejecucion del programa
+start http://127.0.0.1:8000/
+python manage.py runserver
+
 
 echo ""
 echo "✅ Setup finalizado."
