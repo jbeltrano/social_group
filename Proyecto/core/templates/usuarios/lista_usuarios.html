@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Catálogo de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            padding: 20px;
+        }
+        .usuarios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .usuario {
+            background-color: white;
+            border-radius: 10px;
+            width: 250px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .producto:hover {
+            transform: translateY(-5px);
+        }
+        .producto img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .producto .info {
+            padding: 10px 15px;
+        }
+        .producto h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .producto p {
+            color: #555;
+        }
+        .correo {
+            font-weight: bold;
+            color: #007b00;
+            font-size: 16px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de usuarios registrados</h1>
+    <div class="usuarios">
+        {% for usuario in usuarios %}
+        <div class="usuario">
+            <div class="info">
+                <h3>{{ usuario.nombre }}</h3>
+                <p class="correo">Correo: {{ usuario.correo }}</p>
+                <p>Contraseña: {{ usuario.password }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

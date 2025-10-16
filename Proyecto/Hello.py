@@ -8,11 +8,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CookShare.settings")
 django.setup()
 
 # Ahora puedes usar los modelos
-from core.models.Usuario import Usuario
-from core.models.Receta import Receta
+from Proyecto.core.controllers import Controlador_usuario
 
 # Ejemplo de consulta
-usuarios = Usuario.objects.all()
+usuarios = Controlador_usuario.obtener_todos_usuarios()
 
 for u in usuarios:
-    print(u.nombre, u.correo)
+    print(u.nombre, u.correo, u.password)
+    print("-----")

@@ -17,13 +17,9 @@ from dotenv import load_dotenv
 # BASE_DIR apunta a la carpeta donde está manage.py
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Cargar el archivo .env que está en la misma carpeta de manage.py
+# Cargar el archivo .env
 env_path = BASE_DIR.parent / '.env'
 load_dotenv(dotenv_path=env_path)
-
-print("BASE_DIR:", BASE_DIR)
-print("Archivo .env cargado desde:", env_path)
-print("DB_HOST:", os.getenv("DB_HOST"))
 
 
 # Quick-start development settings - unsuitable for production
