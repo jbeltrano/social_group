@@ -17,9 +17,9 @@ class Receta(models.Model):
     verificacion = models.BooleanField(null=True, blank=True)
 
     # Clave foránea hacia usuario.correo
-    correo = models.ForeignKey(
+    usuario_correo = models.ForeignKey(
         Usuario,
-        db_column='correo',             # columna real en la base de datos
+        db_column='usuario_correo',             # columna real en la base de datos
         on_delete=models.DO_NOTHING,    # comportamiento equivalente al FK existente
     )
 

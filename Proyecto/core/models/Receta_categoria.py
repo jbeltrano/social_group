@@ -3,18 +3,18 @@ from .Categoria import Categoria
 from .Receta import Receta
 
 class Receta_categoria(models.Model):
-    id = models.ForeignKey(
+    receta_id = models.ForeignKey(
         'Receta',
-        db_column='id',             # columna real en la base de datos
+        db_column='receta_id',             # columna real en la base de datos
         on_delete=models.DO_NOTHING,
     )
-    cat_id = models.ForeignKey(
+    categoria_id = models.ForeignKey(
         'Categoria',
-        db_column='cat_id',           # columna real en la base de datos
+        db_column='categoria_id',           # columna real en la base de datos
         on_delete=models.DO_NOTHING,
     )
 
     class Meta:
         managed = False     # Django no la recreará
         db_table = 'receta_categoria'
-        unique_together = (('id', 'cat_id'),)
+        unique_together = (('receta_id', 'categoria_id'),)

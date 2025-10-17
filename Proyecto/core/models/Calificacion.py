@@ -3,14 +3,14 @@ from .Usuario import Usuario  # importa el modelo usuario
 from .Receta import Receta  # importa el modelo receta
 
 class Calificacion(models.Model):
-    id = models.ForeignKey(
+    receta_id = models.ForeignKey(
         'Receta',
-        db_column='id',                 # columna real en la base de datos
+        db_column='receta_id',                 # columna real en la base de datos
         on_delete=models.DO_NOTHING,
     )
-    correo = models.ForeignKey(
+    usuario_correo = models.ForeignKey(
         'Usuario',
-        db_column='correo',             # columna real en la base de datos
+        db_column='usuario_correo',             # columna real en la base de datos
         on_delete=models.DO_NOTHING,
     )
     calificacion = models.SmallIntegerField(db_column='numero')
@@ -20,4 +20,4 @@ class Calificacion(models.Model):
     class Meta:
         managed = False     # Django no la recreará
         db_table = 'calificacion'
-        unique_together = (('id', 'correo'),)
+        unique_together = (('receta_id', 'usuario_correo'),)
