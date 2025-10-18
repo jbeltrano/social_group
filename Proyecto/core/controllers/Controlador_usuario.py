@@ -1,7 +1,15 @@
 from core.models.Usuario import Usuario
+from django.contrib.auth.hashers import make_password
 
 def crear_usuario(correo, nombre, contraseña):
-    return Usuario.objects.create(nombre=nombre, correo=correo, password=contraseña)
+
+    contraseña = make_password(contraseña)
+    
+    return Usuario.objects.create(
+        nombre=nombre,
+        correo=correo,
+        password=contraseña
+    )
 
 def obtener_usuario(correo):
     return Usuario.objects.filter(correo=correo)
