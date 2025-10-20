@@ -11,7 +11,7 @@
 
 ## Descripción
 
-<p align="justify"> Este proyecto se basa en un programa que será utilizado por los usuarios para leer, buscar y publicar recetas de cocina de diversas categorías, de tal manera que los usuarios pueden interactuar con diversas recetas según sus gustos o estilo de vida. Adicionalmente, tiene la posibilidad de tener interacciones entre los usuarios, como calificaciones, comentarios, etc. Así mismo, una lista de favoritos donde se puede guardar las recetas que más le pueden gustar a las personas.
+<p align="justify"> !Hola mundo¡ de nuestro proyecto CookShare.
 </p>
 
 <p align="center">
