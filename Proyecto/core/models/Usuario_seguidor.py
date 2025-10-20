@@ -5,13 +5,13 @@ class Usuario_seguidor(models.Model):
     usuario_seguidor = models.ForeignKey(
         'Usuario',
         db_column='usuario_seguidor',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
 
     usuario_seguido = models.ForeignKey(
         'Usuario',
         db_column='usuario_seguido',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
 
     class Meta:

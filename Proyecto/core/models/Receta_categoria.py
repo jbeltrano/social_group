@@ -3,15 +3,15 @@ from .Categoria import Categoria
 from .Receta import Receta
 
 class Receta_categoria(models.Model):
-    receta_id = models.ForeignKey(
+    receta = models.ForeignKey(
         'Receta',
         db_column='receta_id',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
-    categoria_id = models.ForeignKey(
+    categoria = models.ForeignKey(
         'Categoria',
         db_column='categoria_id',           # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
 
     class Meta:
