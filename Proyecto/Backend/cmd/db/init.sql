@@ -20,8 +20,8 @@ CREATE TABLE `receta` (
 );
 
 CREATE TABLE `calificacion` (
-  `id` integer,
-  `correo` varchar(255),
+  `receta_id` integer,
+  `usuario_correo` varchar(255),
   `numero` tinyint NOT NULL,
   `comentario` text,
   `fecha` date NOT NULL DEFAULT (now()),
@@ -57,24 +57,55 @@ CREATE TABLE `usuario_seguidor` (
   PRIMARY KEY (`usuario_seguidor`, `usuario_seguido`)
 );
 
-ALTER TABLE `receta` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `receta` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
-ALTER TABLE `calificacion` ADD FOREIGN KEY (`correo`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `calificacion` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
-ALTER TABLE `calificacion` ADD FOREIGN KEY (`id`) REFERENCES `receta` (`id`);
+ALTER TABLE `calificacion` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `receta_categoria` ADD FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
+ALTER TABLE `receta_categoria` ADD FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `receta_categoria` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`);
+ALTER TABLE `receta_categoria` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `favorito` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`);
+ALTER TABLE `favorito` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `favorito` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `favorito` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
-ALTER TABLE `like` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`);
+ALTER TABLE `like` ADD FOREIGN KEY (`receta_id`) REFERENCES `receta` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `like` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `like` ADD FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
-ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguido`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguido`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
-ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguidor`) REFERENCES `usuario` (`correo`);
+ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguidor`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
+
+
+CREATE TRIGGER tg_actualizar_calificacion_receta_insert
+AFTER INSERT ON calificacion
+FOR EACH ROW
+BEGIN
+    DECLARE nueva_calificacion FLOAT;
+
+    SELECT AVG(numero) INTO nueva_calificacion
+    FROM calificacion
+    WHERE receta_id = NEW.receta_id;
+
+    UPDATE receta
+    SET calificacion = ROUND(nueva_calificacion)
+    WHERE id = NEW.receta_id;
+END;
+
+CREATE TRIGGER tg_actualizar_calificacion_receta_update
+AFTER UPDATE ON calificacion
+FOR EACH ROW
+BEGIN
+    DECLARE nueva_calificacion FLOAT;
+
+    SELECT AVG(numero) INTO nueva_calificacion
+    FROM calificacion
+    WHERE receta_id = NEW.receta_id;
+
+    UPDATE receta
+    SET calificacion = ROUND(nueva_calificacion)
+    WHERE id = NEW.receta_id;
+END;

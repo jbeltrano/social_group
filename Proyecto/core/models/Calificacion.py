@@ -3,17 +3,17 @@ from .Usuario import Usuario  # importa el modelo usuario
 from .Receta import Receta  # importa el modelo receta
 
 class Calificacion(models.Model):
-    receta_id = models.ForeignKey(
+    receta = models.ForeignKey(
         'Receta',
         db_column='receta_id',                 # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
-    usuario_correo = models.ForeignKey(
+    usuario = models.ForeignKey(
         'Usuario',
         db_column='usuario_correo',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
-    calificacion = models.SmallIntegerField(db_column='numero')
+    puntaje = models.SmallIntegerField(db_column='numero')
     comentario = models.TextField(null=True, blank=True)
     fecha = models.DateField(auto_now_add=True)
 

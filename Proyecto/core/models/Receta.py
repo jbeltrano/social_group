@@ -17,10 +17,10 @@ class Receta(models.Model):
     verificacion = models.BooleanField(null=True, blank=True)
 
     # Clave foránea hacia usuario.correo
-    usuario_correo = models.ForeignKey(
+    usuario = models.ForeignKey(
         Usuario,
         db_column='usuario_correo',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,    # comportamiento equivalente al FK existente
+        on_delete=models.CASCADE,    # comportamiento equivalente al FK existente
     )
 
     class Meta:

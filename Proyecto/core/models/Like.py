@@ -3,15 +3,15 @@ from .Usuario import Usuario  # importa el modelo usuario
 from .Receta import Receta  # importa el modelo receta
 
 class Like(models.Model):
-    receta_id = models.ForeignKey(
+    receta = models.ForeignKey(
         'Receta',
         db_column='receta_id',                 # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
-    usuario_correo = models.ForeignKey(
+    usuario = models.ForeignKey(
         'Usuario',
         db_column='usuario_correo',             # columna real en la base de datos
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
 
     class Meta:
