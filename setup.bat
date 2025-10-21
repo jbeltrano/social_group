@@ -16,7 +16,7 @@ if exist "Proyecto/Backend/cmd/db/init.sql" (
 
     echo "📄 Ejecutando script SQL de inicialización..."
     docker exec -i mysql-demo-compose mysql -u root -prootpassword testdb < ./Proyecto/Backend/cmd/db/init.sql
-    
+
     echo "✅ Script SQL ejecutado"
 ) else (
     echo "⚠️  No se encontró init.sql en Proyecto/Backend/cmd/db/"
@@ -66,6 +66,11 @@ type nul > "core/models/__init__.py"
 type nul > "core/controllers/__init__.py"
 type nul > "core/views/__init__.py"
 type nul > "core/templates/__init__.py"
+
+rem 9. Aplicar migraciones 
+echo "🗃️  Aplicando migraciones de Django..."
+python manage.py makemigrations
+python manage.py migrate
 
 
 echo ""

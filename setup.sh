@@ -67,6 +67,11 @@ touch core/controllers/__init__.py
 touch core/views/__init__.py
 touch core/templates/__init__.py
 
+# 9. Aplicar migraciones 
+echo "🗃️  Aplicando migraciones de Django..."
+python manage.py makemigrations
+python manage.py migrate
+
 
 echo ""
 echo "✅ Setup finalizado."
