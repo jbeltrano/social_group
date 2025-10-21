@@ -7,7 +7,7 @@ class Receta(models.Model):
     id = models.AutoField(primary_key=True)
     creacion = models.DateField(auto_now_add=True)
     nombre = models.CharField(max_length=255)
-    imagen = models.BinaryField()  # equivalente a BLOB
+    imagen = models.BinaryField(null=True, blank=True)  # Se mapea a MEDIUMBLOB en MySQL
     descripcion = models.TextField()
     ingredientes = models.TextField()
     pasos = models.TextField()
@@ -19,8 +19,9 @@ class Receta(models.Model):
     # Clave foránea hacia usuario.correo
     usuario = models.ForeignKey(
         Usuario,
-        db_column='usuario_correo',             # columna real en la base de datos
-        on_delete=models.CASCADE,    # comportamiento equivalente al FK existente
+        to_field='correo',  # campo en el modelo Usuario
+        db_column='usuario_correo',  # nombre de la columna en la tabla receta
+        on_delete=models.CASCADE
     )
 
     class Meta:

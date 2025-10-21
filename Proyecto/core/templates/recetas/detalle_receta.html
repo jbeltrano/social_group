@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Imagen y detalles principales -->
+        <div class="col-md-6">
+            {% if receta.imagen %}
+            <img src="{% url 'obtener_imagen_receta' receta.id %}" class="img-fluid rounded shadow" alt="{{ receta.nombre }}">
+            {% else %}
+            <img src="{% static 'images/default-recipe.jpg' %}" class="img-fluid rounded shadow" alt="Imagen por defecto">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ receta.nombre }}</h1>
+            <div class="mb-3">
+                <h5>Descripción</h5>
+                <p>{{ receta.descripcion }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-4">
+                <div>
+                    <strong>Tiempo de preparación:</strong>
+                    <p>{{ receta.tiempo }}</p>
+                </div>
+                <div>
+                    <strong>Porciones:</strong>
+                    <p>{{ receta.porcion }}</p>
+                </div>
+                <div>
+                    <strong>Calificación:</strong>
+                    <p>
+                        {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= receta.calificacion %}
+                        <i class="fas fa-star text-warning"></i>
+                        {% else %}
+                        <i class="far fa-star text-warning"></i>
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Ingredientes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Ingredientes</h3>
+                    <div class="ingredients-list">
+                        {% for ingrediente in receta.ingredientes.split %}
+                        <div class="ingredient-item">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            {{ ingrediente }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pasos -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Preparación</h3>
+                    <div class="steps-list">
+                        {% for paso in receta.pasos.split %}
+                        <div class="step-item mb-3">
+                            <strong>Paso {{ forloop.counter }}</strong>
+                            <p>{{ paso }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">Publicado por: {{ receta.usuario.nombre|default:"Usuario" }}</small>
+                        </div>
+                        <div>
+                            <small class="text-muted">Fecha de creación: {{ receta.creacion }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

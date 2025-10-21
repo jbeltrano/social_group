@@ -1,0 +1,27 @@
+from core.models.Receta_categoria import Receta_categoria
+from core.models.Receta import Receta
+from core.models.Categoria import Categoria
+from core.controllers import Controlador_receta, Controlador_categoria
+
+def obtener_recetas_categorias():
+    return Receta_categoria.objects.all()
+
+def obtener_receta_categoria(categoria_id):
+    return Receta_categoria.objects.filter(categoria_id=categoria_id).first()
+
+def obtener_categorias_de_receta(receta_id):
+    return Receta_categoria.objects.filter(receta_id=receta_id)
+
+def insertar_receta_categoria(receta_id, categoria_id):
+
+    receta = Controlador_receta.obtener_receta(receta_id)
+    categoria = Controlador_categoria.obtener_categoria(categoria_id)
+
+    if not receta or not categoria:
+        return None
+
+    return Receta_categoria.objects.create(
+        receta=receta,
+        categoria=categoria
+    )
+

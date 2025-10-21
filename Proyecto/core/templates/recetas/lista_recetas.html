@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Barra de búsqueda -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form method="GET" action="{% url 'lista_recetas' %}" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Buscar recetas..." value="{{ query }}">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grid de recetas -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for receta in recetas %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if receta.imagen %}
+                <img src="{% url 'obtener_imagen_receta' receta.id %}" class="card-img-top" alt="{{ receta.nombre }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'images/default-recipe.jpg' %}" class="card-img-top" alt="Imagen por defecto"
+                    style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ receta.nombre }}</h5>
+                    <p class="card-text text-truncate">{{ receta.descripcion }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Por: {{ receta.usuario.nombre|default:"Usuario" }}</small>
+                        <div class="btn-group">
+                            <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-sm btn-outline-primary">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No se encontraron recetas.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

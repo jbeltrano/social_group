@@ -5,7 +5,7 @@ def obtener_todos_usuarios():
     return Usuario.objects.all()
 
 def obtener_usuario(correo):
-    return Usuario.objects.filter(correo=correo).first()
+    return Usuario.objects.get(correo=correo)
 
 
 def insertar_usuario(correo, nombre, contraseña):
