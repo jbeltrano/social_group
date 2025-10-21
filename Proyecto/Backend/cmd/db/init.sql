@@ -25,7 +25,7 @@ CREATE TABLE `calificacion` (
   `numero` tinyint NOT NULL,
   `comentario` text,
   `fecha` date NOT NULL DEFAULT (now()),
-  PRIMARY KEY (`id`, `correo`)
+  PRIMARY KEY (`receta_id`, `usuario_correo`)
 );
 
 CREATE TABLE `categoria` (
@@ -80,6 +80,8 @@ ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguido`) REFERENCES `u
 ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguidor`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
 
+DELIMITER //
+
 CREATE TRIGGER tg_actualizar_calificacion_receta_insert
 AFTER INSERT ON calificacion
 FOR EACH ROW
@@ -93,7 +95,11 @@ BEGIN
     UPDATE receta
     SET calificacion = ROUND(nueva_calificacion)
     WHERE id = NEW.receta_id;
-END;
+END //
+
+DELIMITER ;
+
+DELIMITER //
 
 CREATE TRIGGER tg_actualizar_calificacion_receta_update
 AFTER UPDATE ON calificacion
@@ -108,4 +114,6 @@ BEGIN
     UPDATE receta
     SET calificacion = ROUND(nueva_calificacion)
     WHERE id = NEW.receta_id;
-END;
+END //
+
+DELIMITER ;

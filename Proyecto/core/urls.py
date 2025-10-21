@@ -1,9 +1,12 @@
 from django.urls import path
-from core.views import Usuario_view, Receta_view
+from core.views import Usuario_view, Receta_view, Login_view
 
 urlpatterns = [
-    # Urls de usuarios
-
+    # URLs de autenticación
+    path('login/', Login_view.login_view, name='login'),
+    path('logout/', Login_view.logout_view, name='logout'),
+    path('registro/', Login_view.registro_view, name='registro'),
+    # URLs de usuarios
     path('usuarios/', Usuario_view.lista_usuarios_view, name='lista_usuarios'),
     
     # URLs de recetas

@@ -13,8 +13,9 @@ timeout /t 60 > nul
 
 rem 3. Ejecutar el script SQL de inicialización (si existe)
 if exist "Proyecto/Backend/cmd/db/init.sql" (
+
     echo "📄 Ejecutando script SQL de inicialización..."
-    docker exec -i mysql-demo-compose mysql -u testuser -ppassword testdb < ./Proyecto/Backend/cmd/db/init.sql
+    docker exec -i mysql-demo-compose mysql -u root -prootpassword testdb < ./Proyecto/Backend/cmd/db/init.sql
     
     echo "✅ Script SQL ejecutado"
 ) else (
