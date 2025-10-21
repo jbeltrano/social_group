@@ -29,7 +29,7 @@
                     <h5 class="card-title">{{ receta.nombre }}</h5>
                     <p class="card-text text-truncate">{{ receta.descripcion }}</p>
                     <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Por: {{ receta.usuario.nombre|default:"Usuario" }}</small>
+                        <small class="text-muted">Por: {{ receta.usuario.nombre }}</small>
                         <div class="btn-group">
                             <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-sm btn-outline-primary">Ver más</a>
                         </div>

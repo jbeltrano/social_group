@@ -19,9 +19,8 @@ class Receta(models.Model):
     # Clave foránea hacia usuario.correo
     usuario = models.ForeignKey(
         Usuario,
-        to_field='correo',  # campo en el modelo Usuario
-        db_column='usuario_correo',  # nombre de la columna en la tabla receta
-        on_delete=models.CASCADE
+        db_column='usuario_correo',             # columna real en la base de datos
+        on_delete=models.CASCADE,    # comportamiento equivalente al FK existente
     )
 
     class Meta:
