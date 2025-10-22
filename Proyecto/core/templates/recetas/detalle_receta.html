@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load recipe_filters %}
 
 {% block content %}
 <div class="container mt-4">
@@ -26,7 +27,7 @@
             <div class="d-flex justify-content-between mb-4">
                 <div>
                     <strong>Tiempo de preparación:</strong>
-                    <p>{{ receta.tiempo }}</p>
+                    <p>{{ receta.tiempo|format_duration }}</p>
                 </div>
                 <div>
                     <strong>Porciones:</strong>
