@@ -24,6 +24,7 @@ def lista_recetas(request):
     }
     return render(request, 'recetas/lista_recetas.html', context)
 
+
 def detalle_receta(request, receta_id):
     receta = obtener_receta(receta_id)
     if not receta:
@@ -33,6 +34,7 @@ def detalle_receta(request, receta_id):
         'receta': receta
     }
     return render(request, 'recetas/detalle_receta.html', context)
+
 
 def obtener_imagen_receta(request, receta_id):
     receta = obtener_receta(receta_id)

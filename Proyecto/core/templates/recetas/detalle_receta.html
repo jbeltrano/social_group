@@ -13,7 +13,12 @@
             {% endif %}
         </div>
         <div class="col-md-6">
-            <h1 class="mb-3">{{ receta.nombre }}</h1>
+            <h1 class="mb-3 d-flex align-items-center">
+                {{ receta.nombre }}
+                {% if receta.verificacion %}
+                <i class="fas fa-check-circle ms-2" style="color: #3897f0; font-size: 2rem;" title="Receta verificada"></i>
+                {% endif %}
+            </h1>
             <div class="mb-3">
                 <h5>Descripción</h5>
                 <p>{{ receta.descripcion }}</p>
@@ -67,11 +72,13 @@
                 <div class="card-body">
                     <h3 class="card-title">Preparación</h3>
                     <div class="steps-list">
-                        {% for paso in receta.pasos.split %}
-                        <div class="step-item mb-3">
-                            <strong>Paso {{ forloop.counter }}</strong>
-                            <p>{{ paso }}</p>
-                        </div>
+                        {% for paso in receta.pasos.splitlines %}
+                            {% if paso.strip %}
+                            <div class="step-item mb-3">
+                                <strong>Paso {{ forloop.counter }}</strong>
+                                <p>{{ paso | safe }}</p>
+                            </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>

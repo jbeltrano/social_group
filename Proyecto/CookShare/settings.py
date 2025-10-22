@@ -136,3 +136,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Permitir orígenes de confianza para CSRF (necesario cuando se usa ngrok u otros túneles)
+# Deben incluir el esquema (por ejemplo, 'https://...') tal como aparece en el error.
+CSRF_TRUSTED_ORIGINS = [
+    'https://nonfervently-expiational-amani.ngrok-free.dev',
+]

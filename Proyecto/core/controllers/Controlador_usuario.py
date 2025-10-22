@@ -7,6 +7,8 @@ def obtener_todos_usuarios():
 def obtener_usuario(correo):
     return Usuario.objects.get(correo=correo)
 
+def usuario_existe(correo):
+    return Usuario.objects.filter(correo=correo).exists()
 
 def insertar_usuario(correo, nombre, contraseña):
 

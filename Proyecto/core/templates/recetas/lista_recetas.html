@@ -19,11 +19,15 @@
         <div class="col">
             <div class="card h-100 shadow-sm">
                 {% if receta.imagen %}
-                <img src="{% url 'obtener_imagen_receta' receta.id %}" class="card-img-top" alt="{{ receta.nombre }}"
-                    style="height: 200px; object-fit: cover;">
+                <a href="{% url 'detalle_receta' receta.id %}">
+                    <img src="{% url 'obtener_imagen_receta' receta.id %}" class="card-img-top" alt="{{ receta.nombre }}"
+                        style="height: 200px; object-fit: cover;">
+                </a>
                 {% else %}
-                <img src="{% static 'images/default-recipe.jpg' %}" class="card-img-top" alt="Imagen por defecto"
-                    style="height: 200px; object-fit: cover;">
+                <a href="{% url 'detalle_receta' receta.id %}">
+                    <img src="{% static 'images/default-recipe.jpg' %}" class="card-img-top" alt="Imagen por defecto"
+                        style="height: 200px; object-fit: cover;">
+                </a>
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ receta.nombre }}</h5>
