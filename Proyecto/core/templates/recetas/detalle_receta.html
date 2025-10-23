@@ -56,7 +56,7 @@
                 <div class="card-body">
                     <h3 class="card-title">Ingredientes</h3>
                     <div class="ingredients-list">
-                        {% for ingrediente in receta.ingredientes.split %}
+                        {% for ingrediente in receta.ingredientes.splitlines %}
                         <div class="ingredient-item">
                             <i class="fas fa-check-circle text-success me-2"></i>
                             {{ ingrediente }}
