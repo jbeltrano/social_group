@@ -3,12 +3,26 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Barra de búsqueda -->
+    <!-- Barra de búsqueda y filtro de categorías -->
     <div class="row mb-4">
         <div class="col-md-8 mx-auto">
-            <form method="GET" action="{% url 'lista_recetas' %}" class="d-flex">
-                <input type="text" name="q" class="form-control me-2" placeholder="Buscar recetas..." value="{{ query }}">
-                <button class="btn btn-primary" type="submit">Buscar</button>
+            <form method="GET" action="{% url 'lista_recetas' %}" class="row g-3">
+                <div class="col-md-4">
+                    <select name="categoria" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todas las categorías</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" {% if categoria.id|stringformat:"s" == categoria_seleccionada %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex">
+                        <input type="text" name="q" class="form-control me-2" placeholder="Buscar recetas..." value="{{ query }}">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
