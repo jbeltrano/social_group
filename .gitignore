@@ -12,3 +12,6 @@
 # Variables de entorno
 .env
 .env.local
+
+
+# Archivos autogenerados
