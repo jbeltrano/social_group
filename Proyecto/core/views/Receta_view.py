@@ -4,12 +4,14 @@ from core.controllers.Controlador_receta import obtener_recetas, obtener_receta
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 def lista_recetas(request):
     # Obtener el término de búsqueda y la categoría seleccionada
     query = request.GET.get('q', '')
     categoria_id = request.GET.get('categoria', '')
+    page = request.GET.get('page', 1)
     
     # Obtener todas las categorías para el dropdown
     categorias = obtener_categorias()
@@ -24,13 +26,16 @@ def lista_recetas(request):
     if query:
         recetas = recetas.filter(
             Q(nombre__icontains=query) |
-            Q(descripcion__icontains=query) |
             Q(ingredientes__icontains=query) |
             Q(porcion__icontains=query)
         )
     
+    # Configurar la paginación
+    paginator = Paginator(recetas, 45)  # 45 recetas por página
+    recetas_pagina = paginator.get_page(page)
+    
     context = {
-        'recetas': recetas,
+        'recetas': recetas_pagina,
         'query': query,
         'categorias': categorias,
         'categoria_seleccionada': categoria_id

@@ -1,4 +1,4 @@
-
+-- datos de prueba generados Claude 3.5
 
 -- Insertar categorías
 INSERT INTO categoria (nombre) VALUES
