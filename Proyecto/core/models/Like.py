@@ -17,4 +17,4 @@ class Like(models.Model):
     class Meta:
         managed = False     # Django no la recreará
         db_table = 'like'
-        unique_together = (('receta', 'usuario'),)
+        unique_together = (('receta_id', 'usuario_correo'),)

@@ -34,14 +34,6 @@
                     <p>{{ receta.porcion }}</p>
                 </div>
                 <div>
-                    <div class="mb-2">
-                        <button id="likeButton" class="btn {% if user_has_liked %}btn-danger{% else %}btn-outline-danger{% endif %}" 
-                                data-receta-id="{{ receta.id }}"
-                                onclick="toggleLike(this)">
-                            <i class="fas fa-heart"></i>
-                            <span id="likesCount">{{ likes_count }}</span> Me gusta
-                        </button>
-                    </div>
                     <strong>Calificación:</strong>
                     <p>
                         {% for i in "12345"|make_list %}
@@ -113,57 +105,4 @@
         </div>
     </div>
 </div>
-
-{% block scripts %}
-<script>
-function toggleLike(button) {
-    const recetaId = button.getAttribute('data-receta-id');
-    
-    fetch(`/recetas/${recetaId}/like/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            // Actualizar el contador de likes
-            document.getElementById('likesCount').textContent = data.likes_count;
-            
-            // Actualizar la apariencia del botón
-            if (data.liked) {
-                button.classList.remove('btn-outline-danger');
-                button.classList.add('btn-danger');
-            } else {
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-outline-danger');
-            }
-        } else {
-            alert('Error al procesar el like');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al procesar el like');
-    });
-}
-
-// Función auxiliar para obtener el token CSRF
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-</script>
-{% endblock %}
 {% endblock %}

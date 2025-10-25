@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import Usuario_view, Receta_view, Login_view, Like_view
+from core.views import Usuario_view, Receta_view, Login_view
 
 urlpatterns = [
     # URLs de autenticación
@@ -13,6 +13,4 @@ urlpatterns = [
     path('', Receta_view.lista_recetas, name='lista_recetas'),
     path('<int:receta_id>/', Receta_view.detalle_receta, name='detalle_receta'),
     path('<int:receta_id>/imagen/', Receta_view.obtener_imagen_receta, name='obtener_imagen_receta'),
-    # URLs de likes
-    path('<int:receta_id>/like/', Like_view.toggle_like, name='toggle_like'),
 ]
