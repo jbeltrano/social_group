@@ -39,5 +39,5 @@ def obtener_recetas_por_categoria(categoria_id):
     Returns:
         QuerySet de objetos Receta que pertenecen a la categoría especificada
     """
-    return Receta.objects.filter(receta_categoria__categoria_id=categoria_id)
+    return Receta.objects.filter(receta_categoria__categoria_id=categoria_id).order_by('-calificacion', '-creacion')
 

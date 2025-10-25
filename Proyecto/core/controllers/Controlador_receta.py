@@ -1,13 +1,14 @@
 from core.models.Receta import Receta
 from .Controlador_usuario import obtener_usuario
+from django.db.models import Q
 from PIL import Image
 import io
 
 def obtener_recetas():
-    return Receta.objects.all()
+    return Receta.objects.all().order_by('-calificacion', '-creacion')
 
 def obtener_receta(receta_id):
-    return Receta.objects.filter(id=receta_id).first()
+    return Receta.objects.get(id=receta_id)
 
 
 def procesar_imagen(imagen_file, max_size=(800, 800)):
@@ -61,7 +62,7 @@ def insertar_receta(nombre, imagen_file, descripcion, ingredientes, pasos, tiemp
         usuario=usuario
     )
 
-def insertar_receta(nombre, imagen, descripcion, ingredientes, pasos, tiempo, porcion, calificacion, usuario_id):
+def insertar_receta(nombre, imagen, descripcion, ingredientes, pasos, tiempo, porcion, usuario_id):
     
     usuario = obtener_usuario(usuario_id)
 
@@ -76,11 +77,10 @@ def insertar_receta(nombre, imagen, descripcion, ingredientes, pasos, tiempo, po
         pasos=pasos,
         tiempo=tiempo,
         porcion=porcion,
-        calificacion=calificacion,
         usuario=usuario
     )
 
-def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, ingredientes=None, pasos=None, tiempo=None, porcion=None, calificacion=None):
+def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, ingredientes=None, pasos=None, tiempo=None, porcion=None):
     
     if not receta:
         return None
@@ -106,12 +106,50 @@ def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, i
     if porcion is not None:
         receta.porcion = porcion
 
-    if calificacion is not None:
-        receta.calificacion = calificacion
-
     receta.save()
     return receta
 
 
 def eliminar_receta(receta_id):
     return Receta.objects.filter(id=receta_id).delete()
+
+
+def obtener_recetas_por_tiempo(recetas, hora, minuto):
+    
+    
+    tiempo_total_minutos = 0
+    try:
+        if hora and hora.isdigit():
+            tiempo_total_minutos += int(hora) * 60
+
+        if minuto and minuto.isdigit():
+            tiempo_total_minutos += int(minuto)
+        
+        if tiempo_total_minutos > 0:
+            horas = tiempo_total_minutos // 60
+            minutos = tiempo_total_minutos % 60
+            tiempo_objetivo = f"{horas:02d}:{minutos:02d}:00"
+
+            return recetas.filter(tiempo__lte=tiempo_objetivo)
+        
+        return recetas
+        
+    except (ValueError, TypeError):
+        return recetas
+
+def buscar_recetas(recetas, query):
+    """
+    Busca recetas que coincidan con el término de búsqueda en nombre, ingredientes o porción
+    :param recetas: QuerySet de recetas a filtrar
+    :param query: Término de búsqueda
+    :return: QuerySet filtrado de recetas
+    """
+        
+    if not query:
+        return recetas
+        
+    return recetas.filter(
+        Q(nombre__icontains=query) |
+        Q(ingredientes__icontains=query) |
+        Q(porcion__icontains=query)
+    )

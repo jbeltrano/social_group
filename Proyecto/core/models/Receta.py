@@ -13,8 +13,8 @@ class Receta(models.Model):
     pasos = models.TextField()
     tiempo = models.TimeField(null=True, blank=True)
     porcion = models.SmallIntegerField(null=True, blank=True)
-    calificacion = models.SmallIntegerField(null=True, blank=True)
-    verificacion = models.BooleanField(null=True, blank=True)
+    calificacion = models.SmallIntegerField(default=0)
+    verificacion = models.BooleanField(default=False)
 
     # Clave foránea hacia usuario.correo
     usuario = models.ForeignKey(

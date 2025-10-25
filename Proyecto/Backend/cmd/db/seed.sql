@@ -1,4 +1,7 @@
 -- datos de prueba generados Claude 3.5
+INSERT INTO usuario VALUES
+('jbeltrano@unal.edu.co', 'Juan David Beltran Orjuela', '11234'),
+('fernando@gmail.com', 'Fernando Perez Gomez', 'abcd1234');
 
 -- Insertar categorías
 INSERT INTO categoria (nombre) VALUES

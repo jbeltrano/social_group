@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from core.controllers.Controlador_receta import obtener_recetas, obtener_receta
+from core.controllers.Controlador_receta import obtener_recetas, obtener_receta, obtener_recetas_por_tiempo, buscar_recetas
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
-from django.db.models import Q
 from django.core.paginator import Paginator
 
 
 def lista_recetas(request):
-    # Obtener el término de búsqueda y la categoría seleccionada
+    # Obtener el término de búsqueda, la categoría y el tiempo seleccionado
     query = request.GET.get('q', '')
     categoria_id = request.GET.get('categoria', '')
+    filtro_hora = request.GET.get('horas', '')
+    filtro_minuto = request.GET.get('minutos', '')
     page = request.GET.get('page', 1)
     
     # Obtener todas las categorías para el dropdown
@@ -21,14 +22,11 @@ def lista_recetas(request):
         recetas = obtener_recetas_por_categoria(int(categoria_id))
     else:
         recetas = obtener_recetas()
-    
+        
+    recetas = obtener_recetas_por_tiempo(recetas, filtro_hora, filtro_minuto)
+
     # Aplicar filtro si hay término de búsqueda
-    if query:
-        recetas = recetas.filter(
-            Q(nombre__icontains=query) |
-            Q(ingredientes__icontains=query) |
-            Q(porcion__icontains=query)
-        )
+    recetas = buscar_recetas(recetas, query)
     
     # Configurar la paginación
     paginator = Paginator(recetas, 45)  # 45 recetas por página
@@ -38,7 +36,9 @@ def lista_recetas(request):
         'recetas': recetas_pagina,
         'query': query,
         'categorias': categorias,
-        'categoria_seleccionada': categoria_id
+        'categoria_seleccionada': categoria_id,
+        'horas_seleccionadas': filtro_hora,
+        'minutos_seleccionados': filtro_minuto
     }
     return render(request, 'recetas/lista_recetas.html', context)
 

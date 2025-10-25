@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-md-8 mx-auto">
             <form method="GET" action="{% url 'lista_recetas' %}" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select name="categoria" class="form-select" onchange="this.form.submit()">
                         <option value="">Todas las categorías</option>
                         {% for categoria in categorias %}
@@ -17,7 +17,14 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="number" name="horas" class="form-control" min="0" max="23" placeholder="Horas" value="{{ horas_seleccionadas }}" title="Horas máximas de preparación">
+                        <input type="number" name="minutos" class="form-control" min="0" max="59" placeholder="Minutos" value="{{ minutos_seleccionados }}" title="Minutos máximos de preparación">
+                        <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <div class="d-flex">
                         <input type="text" name="q" class="form-control me-2" placeholder="Buscar recetas..." value="{{ query }}">
                         <button class="btn btn-primary" type="submit">Buscar</button>

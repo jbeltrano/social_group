@@ -14,8 +14,8 @@ CREATE TABLE `receta` (
   `pasos` text NOT NULL,
   `tiempo` time,
   `porcion` tinyint,
-  `calificacion` tinyint,
-  `verificacion` bool,
+  `calificacion` tinyint DEFAULT 0,
+  `verificacion` bool DEFAULT false,
   `usuario_correo` varchar(255) NOT NULL
 );
 
