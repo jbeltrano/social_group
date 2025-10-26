@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from core.controllers.Controlador_receta import obtener_recetas, obtener_receta, obtener_recetas_por_tiempo, buscar_recetas
+from django.core.paginator import Paginator
+from core.controllers.Controlador_receta import obtener_recetas, obtener_receta
+from core.controllers.Controlador_receta import obtener_recetas_por_tiempo, buscar_recetas
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
-from django.core.paginator import Paginator
+
 
 
 def lista_recetas(request):
@@ -47,7 +49,6 @@ def detalle_receta(request, receta_id):
     receta = obtener_receta(receta_id)
     if not receta:
         return HttpResponse("Receta no encontrada", status=404)
-    
     context = {
         'receta': receta
     }

@@ -1,0 +1,21 @@
+[MASTER]
+load-plugins=pylint_django
+ignore=venv,migrations,models
+django-settings-module = CookShare.settings
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    no-member,
+    invalid-name,
+    too-few-public-methods,
+    missing-docstring,
+    trailing-whitespace
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=15

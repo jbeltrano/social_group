@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password, make_password
-from core.controllers import Controlador_usuario
-from core.models.Usuario import Usuario
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from core.controllers import Controlador_usuario
+from core.models.Usuario import Usuario
 
 
 def login_requerido(func):
@@ -29,7 +28,7 @@ def login_view(request):
         try:
             usuario = Controlador_usuario.obtener_usuario(correo=username)
 
-            if check_password(password, usuario.contraseña):
+            if Controlador_usuario.verificar_contraseña(usuario=usuario, contraseña=password):
 
                 request.session["usuario_id"] = usuario.correo
                 request.session["usuario_nombre"] = usuario.nombre
