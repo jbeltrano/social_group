@@ -35,12 +35,14 @@ def procesar_imagen(imagen_file, max_size=(800, 800)):
     # Obtener los datos binarios
     return buffer.getvalue()
 
-def insertar_receta(nombre, imagen_file, descripcion, ingredientes, pasos, tiempo, porcion, calificacion, usuario_correo):
+def insertar_receta(nombre, imagen_file, descripcion, ingredientes, pasos, hora, minuto, porcion, usuario_correo):
     """
     Inserta una nueva receta con una imagen
     :param imagen_file: Archivo de imagen (del request.FILES)
     """
     usuario = obtener_usuario(usuario_correo)
+    
+    tiempo = convertir_hora_minuto_a_tiempo(hora, minuto)
 
     if not usuario:
         return None
@@ -58,27 +60,9 @@ def insertar_receta(nombre, imagen_file, descripcion, ingredientes, pasos, tiemp
         pasos=pasos,
         tiempo=tiempo,
         porcion=porcion,
-        calificacion=calificacion,
         usuario=usuario
     )
 
-def insertar_receta(nombre, imagen, descripcion, ingredientes, pasos, tiempo, porcion, usuario_id):
-    
-    usuario = obtener_usuario(usuario_id)
-
-    if not usuario:
-        return None
-        
-    return Receta.objects.create(
-        nombre=nombre,
-        imagen=imagen,
-        descripcion=descripcion,
-        ingredientes=ingredientes,
-        pasos=pasos,
-        tiempo=tiempo,
-        porcion=porcion,
-        usuario=usuario
-    )
 
 def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, ingredientes=None, pasos=None, tiempo=None, porcion=None):
     
@@ -136,6 +120,27 @@ def obtener_recetas_por_tiempo(recetas, hora, minuto):
         
     except (ValueError, TypeError):
         return recetas
+
+def convertir_hora_minuto_a_tiempo(hora, minuto):
+    """
+    Convierte horas y minutos a un objeto de tiempo en formato HH:MM:SS
+    :param hora: Número de horas
+    :param minuto: Número de minutos
+    :return: String en formato HH:MM:SS
+    """
+    try:
+        horas = int(hora) if hora and str(hora).isdigit() else 0
+        minutos = int(minuto) if minuto and str(minuto).isdigit() else 0
+
+        total_minutos = horas * 60 + minutos
+        horas_finales = total_minutos // 60
+        minutos_finales = total_minutos % 60
+
+        return f"{horas_finales:02d}:{minutos_finales:02d}:00"
+    
+    except (ValueError, TypeError):
+        return "00:00:00"
+    
 
 def buscar_recetas(recetas, query):
     """
