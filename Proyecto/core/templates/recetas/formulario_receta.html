@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="text-center mb-4">Publicar receta</h4>
+
+            <form method="POST" enctype="multipart/form-data" action="{% url 'formulario_receta' %}">
+                {% csrf_token %}
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required value="{{nombre}}">
+                </div>
+
+                <!-- Imagen -->
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imagen:</label>
+                    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" value="{{imagen}}">
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required>{{descripcion}}</textarea>
+                </div>
+                <!-- Ingredientes -->
+                 <div class="mb-3">
+                    <label for="lista_ingredientes" class="form-label">Ingredientes:</label>
+                    <textarea class="form-control" id="lista_ingredientes" name="lista_ingredientes" rows="3" required>{{lista_ingredientes}}</textarea>
+                    <small class="text-muted">Vista previa:</small>
+                    <ul id="preview-ingredientes" class="mt-2"></ul>
+                </div>
+
+                <script>
+                document.getElementById('lista_ingredientes').addEventListener('input', function() {
+                    const texto = this.value.trim();
+                    const lineas = texto.split('\n').filter(linea => linea.trim() !== '');
+                    const preview = document.getElementById('preview-ingredientes');
+                    preview.innerHTML = ''; // limpiar
+                    lineas.forEach(linea => {
+                        const li = document.createElement('li');
+                        li.textContent = linea;
+                        preview.appendChild(li);
+                    });
+                });
+                </script>
+
+                <!-- Pasos -->
+                <div class="mb-3">
+                    <label for="pasos" class="form-label">Pasos:</label>
+                    <textarea class="form-control" id="pasos" name="pasos" rows="4" required>{{lista_pasos}}</textarea>
+
+                    <!-- Vista previa numerada -->
+                    <small class="text-muted d-block mt-2">Vista previa:</small>
+                    <ol id="preview-pasos" class="mt-2 ps-3"></ol>
+                </div>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const textarea = document.getElementById('pasos');
+                    const preview = document.getElementById('preview-pasos');
+
+                    textarea.addEventListener('input', function() {
+                        const texto = this.value.trim();
+                        const lineas = texto.split('\n').filter(linea => linea.trim() !== '');
+                        preview.innerHTML = ''; // Limpiar lista previa
+                        lineas.forEach(linea => {
+                            const li = document.createElement('li');
+                            li.textContent = linea;
+                            preview.appendChild(li);
+                        });
+                    });
+                });
+                </script>
+
+
+
+                <!-- Tiempo y Porciones -->
+                <div class="row">
+                        
+                    <div class="col-md-6 mb-3">
+                        <label for="tiempo" class="form-label">Tiempo:</label>
+                        <input type="number" name="horas" class="form-control" min="0" max="23" placeholder="Horas" value="{{ tiempo_horas }}" title="Horas">
+                        <input type="number" name="minutos" class="form-control" min="0" max="59" placeholder="Minutos" value="{{ tiempo_minutos }}" title="Minutos">
+                    
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="porcion" class="form-label">Porciones:</label>
+                        <input type="number" class="form-control" id="porcion" name="porcion" min="1" required value="{{porcion}}">
+                    </div>
+                </div>
+
+                <!-- Botón -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Publicar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

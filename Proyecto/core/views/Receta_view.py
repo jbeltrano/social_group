@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from core.controllers.Controlador_receta import obtener_recetas, obtener_receta
+from core.controllers.Controlador_receta import obtener_recetas, obtener_receta, insertar_receta
 from core.controllers.Controlador_receta import obtener_recetas_por_tiempo, buscar_recetas
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
-
+from core.views.Login_view import login_requerido
 
 
 def lista_recetas(request):
@@ -60,3 +60,36 @@ def obtener_imagen_receta(request, receta_id):
     if receta and receta.imagen:
         return HttpResponse(receta.imagen, content_type='image/jpeg')
     return HttpResponse(status=404)
+
+
+@login_requerido
+def formulario_receta(request):
+    if request.method == 'POST':
+
+        nombre_receta = request.POST.get("nombre")
+        imagen_receta = request.FILES.get("imagen")
+        descripcion = request.POST.get("descripcion")
+        ingredientes = request.POST.get("lista_ingredientes", "")
+        pasos = request.POST.get("pasos", "")
+        horas = request.POST.get("horas", 0)
+        minutos = request.POST.get("minutos", 0)
+        porcion = request.POST.get("porcion", 1)
+
+        usuario_correo = request.session.get("usuario_id")
+
+        insertar_receta(
+            nombre=nombre_receta,
+            imagen_file=imagen_receta,
+            descripcion=descripcion,
+            ingredientes=ingredientes,
+            pasos=pasos,
+            hora=horas,
+            minuto=minutos,
+            porcion=porcion,
+            usuario_correo=usuario_correo
+        )
+
+        return redirect('lista_recetas')
+
+    return render(request, 'recetas/formulario_receta.html')
+

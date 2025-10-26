@@ -49,7 +49,7 @@ def logout_view(request):
 
     request.session.flush()  # Elimina toda la información de sesión
     messages.success(request, "Has cerrado sesión exitosamente")
-    return redirect("login")
+    return redirect("lista_recetas")
 
 
 def registro_view(request):

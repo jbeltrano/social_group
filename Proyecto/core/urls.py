@@ -13,4 +13,5 @@ urlpatterns = [
     path('', Receta_view.lista_recetas, name='lista_recetas'),
     path('<int:receta_id>/', Receta_view.detalle_receta, name='detalle_receta'),
     path('<int:receta_id>/imagen/', Receta_view.obtener_imagen_receta, name='obtener_imagen_receta'),
+    path('nueva/', Receta_view.formulario_receta, name='formulario_receta'),
 ]
