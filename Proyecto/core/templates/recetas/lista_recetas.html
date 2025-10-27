@@ -51,12 +51,26 @@
                 </a>
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ receta.nombre }}</h5>
+                    <h5 class="card-title">{{ receta.nombre }}
+                        {% if receta.verificacion %}
+                        <i class="fas fa-check-circle ms-2" style="color: #3897f0; font-size: 1.2rem;" title="Receta verificada"></i>
+                        {% endif %}
+                    </h5>
+                    
                     <p class="card-text text-truncate">{{ receta.descripcion }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">Por: {{ receta.usuario.nombre }}</small>
-                        <div class="btn-group">
-                            <a href="{% url 'detalle_receta' receta.id %}" class="btn btn-sm btn-outline-primary">Ver más</a>
+                        <div>
+                            <strong>Calificación:</strong>
+                            <p>
+                                {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= receta.calificacion %}
+                                <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                                {% endfor %}
+                            </p>
                         </div>
                     </div>
                 </div>
