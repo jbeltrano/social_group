@@ -2,131 +2,184 @@
 {% load static %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- 📝 Columna izquierda: formulario -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="text-center mb-4">Publicar receta</h4>
 
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'formulario_receta' %}">
+                        {% csrf_token %}
 
-<div class="container mt-5" style="max-width: 600px;">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h4 class="text-center mb-4">Publicar receta</h4>
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
 
-            <form method="POST" enctype="multipart/form-data" action="{% url 'formulario_receta' %}">
-                {% csrf_token %}
+                        <!-- Imagen -->
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label">Imagen:</label>
+                            <img id="preview-imagen"
+                                 src="{% static 'images/default-recipe.jpg' %}"
+                                 alt="Vista previa"
+                                 class="img-fluid rounded mb-2"
+                                 style="max-height: 200px; object-fit: cover;">
+                            <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required>
+                        </div>
 
-                <!-- Nombre -->
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required value="{{nombre}}">
-                </div>
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción:</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required></textarea>
+                        </div>
 
-                <!-- Imagen -->
-                <div class="mb-3">
-                    <label for="imagen" class="form-label">Imagen:</label>
-                    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required value="{{imagen}}">
-                </div>
+                        <!-- Ingredientes -->
+                        <div class="mb-3">
+                            <label for="lista_ingredientes" class="form-label">Ingredientes:</label>
+                            <textarea class="form-control" id="lista_ingredientes" name="lista_ingredientes" rows="3" required></textarea>
+                        </div>
 
-                <!-- Descripción -->
-                <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción:</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required>{{descripcion}}</textarea>
-                </div>
-                <!-- Ingredientes -->
-                 <div class="mb-3">
-                    <label for="lista_ingredientes" class="form-label">Ingredientes:</label>
-                    <textarea class="form-control" id="lista_ingredientes" name="lista_ingredientes" rows="3" required>{{lista_ingredientes}}</textarea>
-                    <small class="text-muted">Vista previa:</small>
-                    <ul id="preview-ingredientes" class="mt-2"></ul>
-                </div>
+                        <!-- Pasos -->
+                        <div class="mb-3">
+                            <label for="pasos" class="form-label">Pasos:</label>
+                            <textarea class="form-control" id="pasos" name="pasos" rows="4" required></textarea>
+                        </div>
 
-                <script>
-                document.getElementById('lista_ingredientes').addEventListener('input', function() {
-                    const texto = this.value.trim();
-                    const lineas = texto.split('\n').filter(linea => linea.trim() !== '');
-                    const preview = document.getElementById('preview-ingredientes');
-                    preview.innerHTML = ''; // limpiar
-                    lineas.forEach(linea => {
-                        const li = document.createElement('li');
-                        li.textContent = linea;
-                        preview.appendChild(li);
-                    });
-                });
-                </script>
-
-                <!-- Pasos -->
-                <div class="mb-3">
-                    <label for="pasos" class="form-label">Pasos:</label>
-                    <textarea class="form-control" id="pasos" name="pasos" rows="4" required>{{lista_pasos}}</textarea>
-
-                    <!-- Vista previa numerada -->
-                    <small class="text-muted d-block mt-2">Vista previa:</small>
-                    <ol id="preview-pasos" class="mt-2 ps-3"></ol>
-                </div>
-
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const textarea = document.getElementById('pasos');
-                    const preview = document.getElementById('preview-pasos');
-
-                    textarea.addEventListener('input', function() {
-                        const texto = this.value.trim();
-                        const lineas = texto.split('\n').filter(linea => linea.trim() !== '');
-                        preview.innerHTML = ''; // Limpiar lista previa
-                        lineas.forEach(linea => {
-                            const li = document.createElement('li');
-                            li.textContent = linea;
-                            preview.appendChild(li);
-                        });
-                    });
-                });
-                </script>
-
-
-
-                <!-- Tiempo y Porciones -->
-                <div class="row">
-                        
-                    <div class="col-md-6 mb-3">
-                        <label for="tiempo" class="form-label">Tiempo:</label>
-                        <input type="number" name="horas" class="form-control" min="0" max="23" placeholder="Horas" value="{{ tiempo_horas }}" title="Horas">
-                        <input type="number" name="minutos" class="form-control" min="0" max="59" placeholder="Minutos" value="{{ tiempo_minutos }}" title="Minutos">
-                    
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="porcion" class="form-label">Porciones:</label>
-                        <input type="number" class="form-control" id="porcion" name="porcion" min="1" required value="{{porcion}}">
-                    </div>
-                </div>
-                
-                <!-- Categorías -->
-                <div class="mb-3">
-                    <label class="form-label d-block mb-2">Categorías:</label>
-                    <div class="row row-cols-2 row-cols-md-3 g-2">
-                        {% for categoria in categorias %}
-                        <div class="col">
-                            <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    id="cat{{ categoria.id }}" 
-                                    name="categorias" 
-                                    value="{{ categoria.id }}">
-                                <label class="form-check-label" for="cat{{ categoria.id }}">
-                                    {{ categoria.nombre }}
-                                </label>
+                        <!-- Tiempo y Porciones -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="horas" class="form-label">Tiempo:</label>
+                                <input type="number" name="horas" id="horas" class="form-control" min="0" max="23" placeholder="Horas">
+                                <input type="number" name="minutos" id="minutos" class="form-control mt-2" min="0" max="59" placeholder="Minutos">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="porcion" class="form-label">Porciones:</label>
+                                <input type="number" class="form-control" id="porcion" name="porcion" min="1" required value="1">
                             </div>
                         </div>
-                        {% endfor %}
-                    </div>
-                    <small class="text-muted d-block mt-2">
-                        Puedes seleccionar una o varias categorías.
-                    </small>
-                </div>
 
-                <!-- Botón -->
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">Publicar</button>
+                        <!-- Categorías -->
+                        <div class="mb-3">
+                            <label class="form-label d-block mb-2">Categorías:</label>
+                            <div class="row row-cols-2 row-cols-md-3 g-2">
+                                {% for categoria in categorias %}
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cat{{ categoria.id }}" name="categorias" value="{{ categoria.id }}">
+                                        <label class="form-check-label" for="cat{{ categoria.id }}">{{ categoria.nombre }}</label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                Puedes seleccionar una o varias categorías.
+                            </small>
+                        </div>
+
+                        <!-- Botón -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Publicar</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <!-- 👀 Columna derecha: vista previa -->
+        <div class="col-md-6 mt-4 mt-md-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="text-center mb-3" id="preview-titulo">Nombre de la receta</h4>
+                    <img src="{% static 'images/default-recipe.jpg' %}"
+                         id="preview-img"
+                         alt="Vista previa"
+                         class="img-fluid rounded mb-3"
+                         style="max-height: 250px; object-fit: cover;">
+
+                    <p><strong>Descripción:</strong> <span id="preview-descripcion">Escribe una breve descripción de tu receta.</span></p>
+
+                    <p><strong>Tiempo estimado:</strong> <span id="preview-tiempo">Sin definir</span></p>
+                    <p><strong>Porciones:</strong> <span id="preview-porcion">1</span></p>
+
+                    <hr>
+
+                    <p><strong>Ingredientes:</strong></p>
+                    <ul id="preview-ingredientes" class="ps-3"></ul>
+
+                    <p><strong>Pasos:</strong></p>
+                    <ol id="preview-pasos" class="ps-3"></ol>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- 🧠 Script para actualizar la vista previa en tiempo real -->
+<script>
+const previewTitulo = document.getElementById('preview-titulo');
+const previewDescripcion = document.getElementById('preview-descripcion');
+const previewIngredientes = document.getElementById('preview-ingredientes');
+const previewPasos = document.getElementById('preview-pasos');
+const previewImg = document.getElementById('preview-img');
+const previewTiempo = document.getElementById('preview-tiempo');
+const previewPorcion = document.getElementById('preview-porcion');
+
+// Título y descripción
+document.getElementById('nombre').addEventListener('input', e => previewTitulo.textContent = e.target.value || 'Nombre de la receta');
+document.getElementById('descripcion').addEventListener('input', e => previewDescripcion.textContent = e.target.value || 'Escribe una breve descripción de tu receta.');
+
+// Ingredientes -> lista
+document.getElementById('lista_ingredientes').addEventListener('input', e => {
+    const lineas = e.target.value.split('\n').filter(l => l.trim() !== '');
+    previewIngredientes.innerHTML = '';
+    lineas.forEach(l => {
+        const li = document.createElement('li');
+        li.textContent = l;
+        previewIngredientes.appendChild(li);
+    });
+});
+
+// Pasos -> lista numerada
+document.getElementById('pasos').addEventListener('input', e => {
+    const lineas = e.target.value.split('\n').filter(l => l.trim() !== '');
+    previewPasos.innerHTML = '';
+    lineas.forEach(l => {
+        const li = document.createElement('li');
+        li.textContent = l;
+        previewPasos.appendChild(li);
+    });
+});
+
+// Imagen
+document.getElementById('imagen').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => previewImg.src = ev.target.result;
+        reader.readAsDataURL(file);
+    }
+});
+
+// Tiempo
+const actualizarTiempo = () => {
+    const h = document.getElementById('horas').value || 0;
+    const m = document.getElementById('minutos').value || 0;
+    if (h == 0 && m == 0) {
+        previewTiempo.textContent = 'Sin definir';
+    } else {
+        previewTiempo.textContent = `${h}h ${m}m`;
+    }
+};
+document.getElementById('horas').addEventListener('input', actualizarTiempo);
+document.getElementById('minutos').addEventListener('input', actualizarTiempo);
+
+// Porciones
+document.getElementById('porcion').addEventListener('input', e => {
+    const val = e.target.value;
+    previewPorcion.textContent = val && val > 0 ? val : '—';
+});
+</script>
 {% endblock %}
