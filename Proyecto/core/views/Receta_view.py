@@ -148,7 +148,10 @@ def mis_recetas_view(request):
 def editar_receta_view(request, receta_id):
 
     receta = obtener_receta(receta_id)
-
+    if not receta:
+        return redirect('mis_recetas')
+    if receta.usuario.correo != request.session.get("usuario_id"):
+        return redirect('mis_recetas')
     if request.method == 'POST':
         nombre = request.POST.get("nombre",receta.nombre)
         descripcion = request.POST.get("descripcion",receta.descripcion)
@@ -198,8 +201,8 @@ def editar_receta_view(request, receta_id):
 
     return render(request, 'recetas/editar_receta.html', context)
 
-
 @require_POST
+@login_requerido
 def eliminar_receta_view(request, receta_id):
     receta = obtener_receta(receta_id)
     if not receta:
