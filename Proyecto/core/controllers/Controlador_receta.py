@@ -1,5 +1,6 @@
 from core.models.Receta import Receta
 from .Controlador_usuario import obtener_usuario
+from core.models.Usuario import Usuario
 from django.db.models import Q
 from PIL import Image
 import io
@@ -10,6 +11,8 @@ def obtener_recetas():
 def obtener_receta(receta_id):
     return Receta.objects.get(id=receta_id)
 
+def obtener_recetas_por_usuario(usuario_correo):
+    return Receta.objects.filter(usuario__correo=usuario_correo).order_by('-creacion')
 
 def procesar_imagen(imagen_file, max_size=(800, 800)):
     """
@@ -98,7 +101,7 @@ def eliminar_receta(receta_id):
     return Receta.objects.filter(id=receta_id).delete()
 
 
-def obtener_recetas_por_tiempo(recetas, hora, minuto):
+def obtener_recetas_por_tiempo(recetas, hora, minuto, usuario_id=None):
     
     
     tiempo_total_minutos = 0
@@ -115,6 +118,9 @@ def obtener_recetas_por_tiempo(recetas, hora, minuto):
             tiempo_objetivo = f"{horas:02d}:{minutos:02d}:00"
 
             return recetas.filter(tiempo__lte=tiempo_objetivo)
+        
+        if usuario_id:
+            return recetas.filter(usuario__correo=usuario_id)
         
         return recetas
         
@@ -150,11 +156,23 @@ def buscar_recetas(recetas, query):
     :return: QuerySet filtrado de recetas
     """
         
-    if not query:
-        return recetas
-        
     return recetas.filter(
         Q(nombre__icontains=query) |
         Q(ingredientes__icontains=query) |
         Q(porcion__icontains=query)
     )
+
+def buscar_recetas_usuario(recetas, query, usuario_id):
+    """
+    Busca recetas que coincidan con el término de búsqueda en nombre, ingredientes o porción
+    :param recetas: QuerySet de recetas a filtrar
+    :param query: Término de búsqueda
+    :return: QuerySet filtrado de recetas
+    """
+        
+        
+    return recetas.filter(
+        Q(nombre__icontains=query) |
+        Q(ingredientes__icontains=query) |
+        Q(porcion__icontains=query)
+    ).filter(usuario__correo = usuario_id)

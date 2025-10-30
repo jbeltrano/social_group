@@ -31,7 +31,7 @@ def eliminar_receta_categoria(receta_id, categoria_id):
         categoria_id=categoria_id
     ).delete()
 
-def obtener_recetas_por_categoria(categoria_id):
+def obtener_recetas_por_categoria(categoria_id, usuario_id=None):
     """
     Obtiene todas las recetas que pertenecen a una categoría específica.
     Args:
@@ -39,5 +39,11 @@ def obtener_recetas_por_categoria(categoria_id):
     Returns:
         QuerySet de objetos Receta que pertenecen a la categoría especificada
     """
+    if usuario_id:
+        return Receta.objects.filter(
+            receta_categoria__categoria_id=categoria_id,
+            usuario__correo=usuario_id
+        ).order_by('-calificacion', '-creacion')
+
     return Receta.objects.filter(receta_categoria__categoria_id=categoria_id).order_by('-calificacion', '-creacion')
 

@@ -58,6 +58,7 @@
                                 <i class="fa-solid fa-user me-2"></i> {{ request.session.usuario_nombre }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'mis_recetas' %}">Mis recetas</a></li>
                                 <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>
                             </ul>
                         </li>

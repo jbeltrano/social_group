@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from core.controllers.Controlador_receta import obtener_recetas, obtener_receta, insertar_receta
+from core.controllers.Controlador_receta import obtener_recetas, obtener_receta, insertar_receta, obtener_recetas_por_usuario, buscar_recetas_usuario
 from core.controllers.Controlador_receta import obtener_recetas_por_tiempo, buscar_recetas
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
@@ -93,3 +93,42 @@ def formulario_receta(request):
 
     return render(request, 'recetas/formulario_receta.html')
 
+
+@login_requerido
+def mis_recetas_view(request):
+
+    usuario_id = request.session.get('usuario_id')
+    
+    query = request.GET.get('q', '')
+    categoria_id = request.GET.get('categoria', '')
+    filtro_hora = request.GET.get('horas', '')
+    filtro_minuto = request.GET.get('minutos', '')
+    page = request.GET.get('page', 1)
+    
+    # Obtener todas las categorías para el dropdown
+    categorias = obtener_categorias()
+    
+    # Obtener las recetas según la categoría seleccionada
+    if categoria_id and categoria_id.isdigit():
+        recetas = obtener_recetas_por_categoria(int(categoria_id), usuario_id)
+    else:
+        recetas = obtener_recetas_por_usuario(usuario_id)
+        
+    recetas = obtener_recetas_por_tiempo(recetas, filtro_hora, filtro_minuto, usuario_id)
+
+    # Aplicar filtro si hay término de búsqueda
+    recetas = buscar_recetas_usuario(recetas, query, usuario_id)
+    
+    # Configurar la paginación
+    paginator = Paginator(recetas, 45)  # 45 recetas por página
+    recetas_pagina = paginator.get_page(page)
+    
+    context = {
+        'recetas': recetas_pagina,
+        'query': query,
+        'categorias': categorias,
+        'categoria_seleccionada': categoria_id,
+        'horas_seleccionadas': filtro_hora,
+        'minutos_seleccionados': filtro_minuto
+    }
+    return render(request, 'recetas/mis_recetas.html', context)
