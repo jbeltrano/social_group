@@ -9,6 +9,8 @@ def obtener_recetas():
     return Receta.objects.all().order_by('-calificacion', '-creacion')
 
 def obtener_receta(receta_id):
+    if not Receta.objects.filter(id=receta_id).exists():
+        return None
     return Receta.objects.get(id=receta_id)
 
 def obtener_recetas_por_usuario(usuario_correo):
@@ -67,7 +69,7 @@ def insertar_receta(nombre, imagen_file, descripcion, ingredientes, pasos, hora,
     )
 
 
-def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, ingredientes=None, pasos=None, tiempo=None, porcion=None):
+def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, ingredientes=None, pasos=None, hora=None, minuto=None, porcion=None):
     
     if not receta:
         return None
@@ -87,8 +89,8 @@ def actualizar_receta(receta, nombre=None, imagen_file=None, descripcion=None, i
     if pasos is not None:
         receta.pasos = pasos
 
-    if tiempo is not None:
-        receta.tiempo = tiempo
+    if hora is not None or minuto is not None:
+        receta.tiempo = convertir_hora_minuto_a_tiempo(hora, minuto)
 
     if porcion is not None:
         receta.porcion = porcion

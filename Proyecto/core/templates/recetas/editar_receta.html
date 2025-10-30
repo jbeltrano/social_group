@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="text-center mb-4">Editar receta</h4>
+
+            <form method="POST" enctype="multipart/form-data" action="{% url 'editar_receta' receta.id %}">
+                {% csrf_token %}
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required value="{{ receta.nombre }}">
+                </div>
+
+                <!-- Imagen -->
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imagen:</label>
+
+                    <!-- Imagen actual -->
+                    {% if receta.imagen %}
+                        <img id="preview-imagen" 
+                            src="{% url 'obtener_imagen_receta' receta.id %}" 
+                            alt="Imagen actual" 
+                            class="img-fluid rounded mb-2" 
+                            style="max-height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img id="preview-imagen" 
+                            src="{% static 'images/default-recipe.jpg' %}" 
+                            alt="Vista previa" 
+                            class="img-fluid rounded mb-2 d-none" 
+                            style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+
+                    <!-- Campo de subida -->
+                    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+                    <small class="text-muted">Deja este campo vacío si no deseas cambiar la imagen.</small>
+                </div>
+
+                <!-- Script para previsualizar la imagen seleccionada -->
+                <script>
+                document.getElementById('imagen').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    const preview = document.getElementById('preview-imagen');
+
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.classList.remove('d-none'); // por si estaba oculto
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Si se borra el archivo seleccionado, puedes restaurar la imagen original o dejar en blanco
+                        preview.src = "{% if receta.imagen %}{% url 'obtener_imagen_receta' receta.id %}{% else %}{% static 'images/default-recipe.jpg' %}{% endif %}";
+                    }
+                });
+                </script>
+
+                <!-- Descripción -->
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="2" required>{{ receta.descripcion }}</textarea>
+                </div>
+
+                <!-- Ingredientes -->
+                <div class="mb-3">
+                    <label for="lista_ingredientes" class="form-label">Ingredientes:</label>
+                    <textarea class="form-control" id="lista_ingredientes" name="lista_ingredientes" rows="3" required>{{ receta.ingredientes }}</textarea>
+                </div>
+
+                <!-- Pasos -->
+                <div class="mb-3">
+                    <label for="pasos" class="form-label">Pasos:</label>
+                    <textarea class="form-control" id="pasos" name="pasos" rows="4" required>{{ receta.pasos }}</textarea>
+                </div>
+
+                <!-- Tiempo y Porciones -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="tiempo" class="form-label">Tiempo:</label>
+                        <input type="number" name="horas" class="form-control" min="0" max="23" placeholder="Horas" value="{{ receta.tiempo.hour }}">
+                            <input type="number" name="minutos" class="form-control mt-2" min="0" max="59" placeholder="Minutos" value="{{ receta.tiempo.minute }}">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="porcion" class="form-label">Porciones:</label>
+                        <input type="number" class="form-control" id="porcion" name="porcion" min="1" required value="{{ receta.porcion }}">
+                    </div>
+                </div>
+
+                <!-- Categorías (checkboxes) -->
+                <div class="mb-3">
+                    <label class="form-label d-block mb-2">Categorías:</label>
+                    <div class="row row-cols-2 row-cols-md-3 g-2">
+                        {% for categoria in categorias %}
+                        <div class="col">
+                            <div class="form-check">
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox" 
+                                    id="cat{{ categoria.id }}" 
+                                    name="categorias" 
+                                    value="{{ categoria.id }}"
+                                    {% if categoria.id in categorias_receta %}checked{% endif %}>
+                                <label class="form-check-label" for="cat{{ categoria.id }}">
+                                    {{ categoria.nombre }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Botón -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Guardar cambios</button>
+                    <a href="{% url 'mis_recetas' %}" class="btn btn-secondary ms-2">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

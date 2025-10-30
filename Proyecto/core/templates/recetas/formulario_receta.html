@@ -95,6 +95,31 @@
                         <input type="number" class="form-control" id="porcion" name="porcion" min="1" required value="{{porcion}}">
                     </div>
                 </div>
+                
+                <!-- Categorías -->
+                <div class="mb-3">
+                    <label class="form-label d-block mb-2">Categorías:</label>
+                    <div class="row row-cols-2 row-cols-md-3 g-2">
+                        {% for categoria in categorias %}
+                        <div class="col">
+                            <div class="form-check">
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox" 
+                                    id="cat{{ categoria.id }}" 
+                                    name="categorias" 
+                                    value="{{ categoria.id }}">
+                                <label class="form-check-label" for="cat{{ categoria.id }}">
+                                    {{ categoria.nombre }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        Puedes seleccionar una o varias categorías.
+                    </small>
+                </div>
 
                 <!-- Botón -->
                 <div class="text-end">

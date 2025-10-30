@@ -50,7 +50,8 @@
                         style="height: 200px; object-fit: cover;">
                 </a>
                 {% endif %}
-                <div class="card-body">
+                
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ receta.nombre }}
                         {% if receta.verificacion %}
                         <i class="fas fa-check-circle ms-2" style="color: #3897f0; font-size: 1.2rem;" title="Receta verificada"></i>
@@ -58,24 +59,65 @@
                     </h5>
                     
                     <p class="card-text text-truncate">{{ receta.descripcion }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Por: {{ receta.usuario.nombre }}</small>
-                        <div>
-                            <strong>Calificación:</strong>
-                            <p>
-                                {% for i in "12345"|make_list %}
-                                {% if forloop.counter <= receta.calificacion %}
-                                <i class="fas fa-star text-warning"></i>
-                                {% else %}
-                                <i class="far fa-star text-warning"></i>
-                                {% endif %}
-                                {% endfor %}
-                            </p>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">Por: {{ receta.usuario.nombre }}</small>
+                            <div>
+                                <strong>Calificación:</strong>
+                                <p class="mb-0">
+                                    {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= receta.calificacion %}
+                                    <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ✅ Botones Editar y Eliminar -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'editar_receta' receta.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-1"></i> Editar
+                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmarEliminarModal{{ receta.id }}">
+                                <i class="fas fa-trash-alt me-1"></i> Eliminar
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ✅ Modal de confirmación -->
+        <div class="modal fade" id="confirmarEliminarModal{{ receta.id }}" tabindex="-1" aria-labelledby="modalLabel{{ receta.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalLabel{{ receta.id }}">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Confirmar eliminación
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Seguro que deseas eliminar la receta <strong>{{ receta.nombre }}</strong>?  
+                        Esta acción no se puede deshacer.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{% url 'eliminar_receta' receta.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar definitivamente</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {% empty %}
         <div class="col-12 text-center">
             <p>No se encontraron recetas.</p>
@@ -113,36 +155,6 @@
         </ul>
     </nav>
     {% endif %}
-    <!-- Botón flotante para agregar receta -->
-
-    <style>
-    .btn-flotante {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        font-size: 30px;
-        font-weight: bold;
-        text-decoration: none; /* 🔹 Elimina la línea del enlace */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #007bff;
-        color: white;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
-        z-index: 1000;
-    }
-    .btn-flotante:hover {
-        background-color: #0056b3;
-        transform: scale(1.1);
-        text-decoration: none; /* 🔹 Asegura que no aparezca al hacer hover */
-    }
-    </style>
-
-    <a href="{% url 'formulario_receta' %}" class="btn-flotante">+</a>
 
     
 </div>

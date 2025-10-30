@@ -4,17 +4,14 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from core.controllers import Controlador_usuario
 from core.models.Usuario import Usuario
-
+from functools import wraps
 
 def login_requerido(func):
-
+    @wraps(func)
     def wrapper(request, *args, **kwargs):
-
         if "usuario_id" not in request.session:
             return redirect("login")
-        
         return func(request, *args, **kwargs)
-    
     return wrapper
 
 

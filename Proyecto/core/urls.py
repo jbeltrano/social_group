@@ -17,6 +17,9 @@ urlpatterns = [
     path('<int:receta_id>/imagen/', Receta_view.obtener_imagen_receta, name='obtener_imagen_receta'),
     path('nueva/', Receta_view.formulario_receta, name='formulario_receta'),
     path('mis_recetas/', Receta_view.mis_recetas_view, name='mis_recetas'),
+    path('mis_recetas/editar/<int:receta_id>/', Receta_view.editar_receta_view, name='editar_receta'),
+    path('mis_recetas/eliminar/<int:receta_id>/', Receta_view.eliminar_receta_view, name='eliminar_receta'),
+
 
     path('favicon.ico', RedirectView.as_view(url='/static/core/favicon.ico')),
 ]
