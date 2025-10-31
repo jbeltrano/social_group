@@ -178,3 +178,18 @@ def buscar_recetas_usuario(recetas, query, usuario_id):
         Q(ingredientes__icontains=query) |
         Q(porcion__icontains=query)
     ).filter(usuario__correo = usuario_id)
+
+def buscar_recetas_favoritas_usuario(recetas, query, usuario_id):
+    """
+    Busca recetas favoritas que coincidan con el término de búsqueda en nombre, ingredientes o porción
+    :param recetas: QuerySet de recetas a filtrar
+    :param query: Término de búsqueda
+    :return: QuerySet filtrado de recetas favoritas
+    """
+        
+        
+    return recetas.filter(
+        Q(nombre__icontains=query) |
+        Q(ingredientes__icontains=query) |
+        Q(porcion__icontains=query)
+    ).filter(favoritos__usuario__correo = usuario_id)

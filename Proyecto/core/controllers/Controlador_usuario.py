@@ -1,5 +1,5 @@
 from core.models.Usuario import Usuario
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
 
 def obtener_todos_usuarios():
     return Usuario.objects.all()
@@ -40,7 +40,3 @@ def actualizar_usuario(correo, nombre=None, contraseña=None):
 
 def eliminar_usuario(correo):
     return Usuario.objects.filter(correo=correo).delete()
-
-
-def verificar_contraseña(usuario, contraseña):
-    return check_password(contraseña, usuario.contraseña)

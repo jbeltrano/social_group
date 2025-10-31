@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from core.controllers import Controlador_usuario
+from core.controllers import Controlador_login
 from core.models.Usuario import Usuario
 from functools import wraps
 
@@ -22,23 +23,16 @@ def login_view(request):
         username = request.POST["username"]
         password = request.POST["password"]
 
-        try:
-            usuario = Controlador_usuario.obtener_usuario(correo=username)
+        error = Controlador_login.verificar_login(username, password)
 
-            if Controlador_usuario.verificar_contraseña(usuario=usuario, contraseña=password):
-
-                request.session["usuario_id"] = usuario.correo
-                request.session["usuario_nombre"] = usuario.nombre
-
-                messages.success(request, "Inicio de sesión exitoso")
-                return redirect("lista_recetas")
-            
-            else:
-                messages.error(request, "Contraseña incorrecta")
-
-        except Usuario.DoesNotExist:
-            messages.error(request, "Usuario no encontrado")
-
+        if error:
+            messages.error(request, error)
+            return render(request, "login/login.html")
+        
+        usuario = Controlador_usuario.obtener_usuario(correo=username)
+        Controlador_login.iniciar_sesion(request, usuario)
+        return redirect("lista_recetas")
+        
     return render(request, "login/login.html")
 
 
@@ -59,50 +53,29 @@ def registro_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
-        # Validaciones
-        if not all([nombre, apellido, correo, password, confirm_password]):
-            messages.error(request, "Todos los campos son obligatorios")
+        errores = Controlador_login.verificar_registro(nombre, apellido, correo, password, confirm_password)
+
+        if errores:
+            for mensaje in errores:
+                messages.error(request, mensaje)
             return render(request, "login/registro.html")
-
-        try:
-            validate_email(correo)
-
-        except ValidationError:
-            messages.error(request, "El correo electrónico no es válido")
-            return render(request, "login/registro.html")
-
-        if password != confirm_password:
-
-            messages.error(request, "Las contraseñas no coinciden")
-            return render(request, "login/registro.html")
-
-        if len(password) < 8:
-
-            messages.error(request, "La contraseña debe tener al menos 8 caracteres")
-            return render(request, "login/registro.html")
-
         
         if Controlador_usuario.usuario_existe(correo):
             messages.error(request, "Este correo electrónico ya está registrado")
             return render(request, "login/registro.html")
 
-        try:
-            # Crear el usuario
-            usuario = Controlador_usuario.insertar_usuario(
-                correo=correo,
-                nombre=f"{nombre} {apellido}",
-                contraseña=password
-            )
-            
-            # Iniciar sesión automáticamente
-            request.session["usuario_id"] = usuario.correo
-            request.session["usuario_nombre"] = usuario.nombre
-            
-            messages.success(request, "Cuenta creada exitosamente")
-            return redirect("lista_recetas")
-            
-        except Exception as e:
-            messages.error(request, f"Error al crear la cuenta: {str(e)}")
-            return render(request, "login/registro.html")
+          
+        # Crear el usuario
+        usuario = Controlador_usuario.insertar_usuario(
+            correo=correo,
+            nombre=f"{nombre} {apellido}",
+            contraseña=password
+        )
+        
+        # Iniciar sesión automáticamente
+        Controlador_login.iniciar_sesion(request, usuario)
+        
+        messages.success(request, "Cuenta creada exitosamente")
+        return redirect("lista_recetas")
 
     return render(request, "login/registro.html")
