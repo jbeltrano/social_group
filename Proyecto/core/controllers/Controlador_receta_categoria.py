@@ -42,6 +42,7 @@ def obtener_recetas_por_categoria(categoria_id, usuario_id=None):
     Obtiene todas las recetas que pertenecen a una categoría específica.
     Args:
         categoria_id: ID de la categoría
+        usuario_id: (opcional) correo electrónico del usuario para filtrar las recetas por usuario
     Returns:
         QuerySet de objetos Receta que pertenecen a la categoría especificada
     """
