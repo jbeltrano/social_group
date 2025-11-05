@@ -21,6 +21,9 @@
 
                     <form method="POST" action="{% url 'login' %}">
                         {% csrf_token %}
+
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        
                         <div class="mb-3">
                             <label for="username" class="form-label">Correo electrónico</label>
                             <input type="email" class="form-control" id="username" name="username" required>
@@ -36,7 +39,7 @@
                     
                     <div class="text-center mt-3">
                         <p class="mb-0">¿No tienes una cuenta?</p>
-                        <a href="{% url 'registro' %}" class="text-decoration-none">Regístrate aquí</a>
+                        <a href="{% url 'registro' %}?next={{ request.GET.next|default:request.path }}" class="text-decoration-none">Regístrate aquí</a>
                     </div>
                 </div>
             </div>

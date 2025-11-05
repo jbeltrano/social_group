@@ -16,6 +16,16 @@ urlpatterns = [
     path('<int:receta_id>/', Receta_view.detalle_receta, name='detalle_receta'),
     path('<int:receta_id>/imagen/', Receta_view.obtener_imagen_receta, name='obtener_imagen_receta'),
     path('nueva/', Receta_view.formulario_receta, name='formulario_receta'),
+    path('mis_recetas/', Receta_view.mis_recetas_view, name='mis_recetas'),
+    path('mis_recetas/editar/<int:receta_id>/', Receta_view.editar_receta_view, name='editar_receta'),
+    path('mis_recetas/eliminar/<int:receta_id>/', Receta_view.eliminar_receta_view, name='eliminar_receta'),
+    path('recetas_favoritas/', Receta_view.recetas_favoritas_view, name='recetas_favoritas'),
+    path('recetas_favoritas/eliminar/<int:receta_id>/', Receta_view.eliminar_favorito_view, name='eliminar_receta_favorita'),
+    path('recetas_favoritas/eliminar/', Receta_view.eliminar_favorito_view, name='eliminar_favorito'),
+    path('recetas_favoritas/insertar/', Receta_view.insertar_favorito_view, name='insertar_favorito'),
+    path('recetas_like/', Receta_view.recetas_like_view, name='recetas_like'),
+    path('recetas_like/eliminar/', Receta_view.eliminar_like_view, name='eliminar_like'),
+    path('recetas_like/insertar/', Receta_view.insertar_like_view, name='insertar_like'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/core/favicon.ico')),
 ]

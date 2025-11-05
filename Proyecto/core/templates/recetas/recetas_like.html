@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Mis Recetas Favoritas</h2>
+
+    <!-- Grid de recetas -->
+    <div id="contenedor-recetas" class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for receta in recetas %}
+        <div class="col receta-item" id="receta-{{ receta.id }}">
+            <div class="card h-100 shadow-sm">
+                <a href="{% url 'detalle_receta' receta.id %}">
+                    {% if receta.imagen %}
+                    <img src="{% url 'obtener_imagen_receta' receta.id %}" class="card-img-top" alt="{{ receta.nombre }}"
+                        style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/default-recipe.jpg' %}" class="card-img-top" alt="Imagen por defecto"
+                        style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                </a>
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        {{ receta.nombre }}
+                        {% if receta.verificacion %}
+                        <i class="fas fa-check-circle ms-2" style="color: #3897f0; font-size: 1.2rem;" title="Receta verificada"></i>
+                        {% endif %}
+                    </h5>
+
+                    <p class="card-text text-truncate">{{ receta.descripcion }}</p>
+
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Por: {{ receta.usuario.nombre }}</small>
+                        <div>
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= receta.calificacion %}
+                                <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- ❤️ Botón de like -->
+                    <div class="text-end mt-3">
+                        <button class="btn-like active" data-receta-id="{{ receta.id }}" title="Quitar de likes">
+                            <i class="fa-solid fa-thumbs-up fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No tienes recetas favoritas aún.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Controles de paginación -->
+{% if recetas.paginator.num_pages > 1 %}
+<nav aria-label="Navegación de páginas" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if recetas.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ recetas.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}" aria-label="Anterior">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in recetas.paginator.page_range %}
+        <li class="page-item {% if recetas.number == num %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}">
+                {{ num }}
+            </a>
+        </li>
+        {% endfor %}
+
+        {% if recetas.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ recetas.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}" aria-label="Siguiente">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+<!-- Estilos -->
+<style>
+.btn-like {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ccc;
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.btn-like.active {
+    color: #1900ff;
+}
+
+.btn-like:hover {
+    transform: scale(1.2);
+}
+
+.btn-like:active {
+    transform: scale(0.9);
+}
+</style>
+
+<!-- Script AJAX -->
+<script>
+document.querySelectorAll('.btn-like').forEach(boton => {
+    boton.addEventListener('click', async () => {
+        const recetaId = boton.dataset.recetaId;
+        const recetaDiv = document.getElementById(`receta-${recetaId}`);
+
+        try {
+            const response = await fetch("{% url 'eliminar_like' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({
+                    receta_id: recetaId,
+                    usuario_correo: "{{ usuario.correo }}",
+                }),
+            });
+
+            if (response.ok) {
+                // Animación al eliminar
+                recetaDiv.style.transition = "opacity 0.5s ease";
+                recetaDiv.style.opacity = "0";
+                setTimeout(() => recetaDiv.remove(), 500);
+            } else {
+                console.error("Error al eliminar like");
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+        }
+    });
+});
+</script>
+{% endblock %}

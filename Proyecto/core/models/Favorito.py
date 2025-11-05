@@ -1,20 +1,20 @@
 from django.db import models
-from .Usuario import Usuario  # importa el modelo usuario
-from .Receta import Receta  # importa el modelo receta
+from .Usuario import Usuario
+from .Receta import Receta
 
 class Favorito(models.Model):
     receta = models.ForeignKey(
         'Receta',
-        db_column='receta_id',                 # columna real en la base de datos
+        db_column='receta_id',
         on_delete=models.CASCADE,
     )
     usuario = models.ForeignKey(
         'Usuario',
-        db_column='usuario_correo',             # columna real en la base de datos
+        db_column='usuario_correo',
         on_delete=models.CASCADE,
     )
 
     class Meta:
-        managed = False     # Django no la recreará
+        managed = False
         db_table = 'favorito'
-        unique_together = (('receta_id', 'usuario_correo'),)
+        unique_together = (('receta', 'usuario'),)
