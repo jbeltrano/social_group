@@ -31,7 +31,9 @@ def login_view(request):
         
         usuario = Controlador_usuario.obtener_usuario(correo=username)
         Controlador_login.iniciar_sesion(request, usuario)
-        return redirect("lista_recetas")
+        next_url = request.POST.get("next") or "/"
+        print(request.POST.get("next"))
+        return redirect(next_url)
         
     return render(request, "login/login.html")
 
@@ -76,6 +78,7 @@ def registro_view(request):
         Controlador_login.iniciar_sesion(request, usuario)
         
         messages.success(request, "Cuenta creada exitosamente")
-        return redirect("lista_recetas")
+        next_url = request.POST.get("next") or "/"
+        return redirect(next_url)
 
     return render(request, "login/registro.html")

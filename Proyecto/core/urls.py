@@ -22,6 +22,7 @@ urlpatterns = [
     path('recetas_favoritas/', Receta_view.recetas_favoritas_view, name='recetas_favoritas'),
     path('recetas_favoritas/eliminar/<int:receta_id>/', Receta_view.eliminar_favorito_view, name='eliminar_receta_favorita'),
     path('recetas_favoritas/eliminar/', Receta_view.eliminar_favorito_view, name='eliminar_favorito'),
+    path('recetas_favoritas/insertar/', Receta_view.insertar_favorito_view, name='insertar_favorito'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/core/favicon.ico')),
 ]

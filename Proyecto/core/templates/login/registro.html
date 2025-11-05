@@ -21,6 +21,9 @@
 
                     <form method="POST" action="{% url 'registro' %}">
                         {% csrf_token %}
+
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="nombre" class="form-label">Nombre</label>

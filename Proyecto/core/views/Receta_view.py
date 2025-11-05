@@ -5,7 +5,7 @@ from core.controllers.Controlador_receta import obtener_recetas, obtener_receta,
 from core.controllers.Controlador_receta import obtener_recetas_por_tiempo, buscar_recetas, eliminar_receta
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria, insertar_receta_categoria, obtener_categorias_de_receta, eliminar_categorias_de_receta
-from core.controllers.Controlador_favorito import eliminar_favorito, obtener_recetas_favoritas_por_usuario as recetas_favoritas_usuario
+from core.controllers.Controlador_favorito import eliminar_favorito, obtener_recetas_favoritas_por_usuario as recetas_favoritas_usuario, insertar_favorito, es_favorito
 from core.views.Login_view import login_requerido
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
@@ -53,8 +53,20 @@ def detalle_receta(request, receta_id):
     receta = obtener_receta(receta_id)
     if not receta:
         return HttpResponse("Receta no encontrada", status=404)
+
+    usuario_correo = request.session.get("usuario_id")
+    es_favorito_flag = False
+
+    if usuario_correo:
+        try:
+            es_favorito_flag = es_favorito(usuario_correo, receta_id)
+        except Exception as e:
+            print("Error verificando favorito:", e)
+
     context = {
-        'receta': receta
+        'receta': receta,
+        'es_favorito': es_favorito_flag,
+        'usuario_correo': usuario_correo  # puede ser None si no hay sesión
     }
     return render(request, 'recetas/detalle_receta.html', context)
 
@@ -243,4 +255,26 @@ def eliminar_favorito_view(request):
         usuario_correo = request.session.get("usuario_id")
         eliminar_favorito(usuario_correo, receta_id)
         return JsonResponse({"success": True})
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+@csrf_exempt
+def insertar_favorito_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        receta_id = data.get("receta_id")
+        usuario_correo = request.session.get("usuario_id")
+
+        print("Usuario correo:", usuario_correo)
+        print("Receta ID:", receta_id)
+        if not usuario_correo:
+            return JsonResponse({"error": "Usuario no autenticado"}, status=401)
+
+        if es_favorito(usuario_correo, receta_id):
+            eliminar_favorito(usuario_correo, receta_id)
+        else:
+            insertar_favorito(usuario_correo, receta_id)
+
+        return JsonResponse({"success": True})
+
     return JsonResponse({"error": "Método no permitido"}, status=405)

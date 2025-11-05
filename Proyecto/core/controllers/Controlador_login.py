@@ -25,7 +25,7 @@ def verificar_registro(nombre, apellido, correo, contraseña, contraseña_confir
     if contraseña != contraseña_confirmada:
         errores.append("Las contraseñas no coinciden.")
 
-    if validar_longitud_contraseña(contraseña):
+    if not validar_longitud_contraseña(contraseña):
         errores.append("La contraseña debe tener al menos 8 caracteres.")
 
     return (errores)
