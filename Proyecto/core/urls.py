@@ -23,6 +23,9 @@ urlpatterns = [
     path('recetas_favoritas/eliminar/<int:receta_id>/', Receta_view.eliminar_favorito_view, name='eliminar_receta_favorita'),
     path('recetas_favoritas/eliminar/', Receta_view.eliminar_favorito_view, name='eliminar_favorito'),
     path('recetas_favoritas/insertar/', Receta_view.insertar_favorito_view, name='insertar_favorito'),
+    path('recetas_like/', Receta_view.recetas_like_view, name='recetas_like'),
+    path('recetas_like/eliminar/', Receta_view.eliminar_like_view, name='eliminar_like'),
+    path('recetas_like/insertar/', Receta_view.insertar_like_view, name='insertar_like'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/core/favicon.ico')),
 ]

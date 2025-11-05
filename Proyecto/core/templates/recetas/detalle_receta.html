@@ -20,6 +20,13 @@
                     title="{% if es_favorito %}Quitar de favoritos{% else %}Agregar a favoritos{% endif %}">
                 <i class="fas fa-heart"></i>
             </button>
+            <!--  Botón de like sobre la imagen -->
+            <button id="btn-like"
+                    class="btn-like {% if es_like %}active{% endif %}"
+                    data-receta-id="{{ receta.id }}"
+                    title="{% if es_like %}Quitar de likes{% else %}Agregar a likes{% endif %}">
+                <i class="fa-solid fa-thumbs-up fa-lg"></i>
+            </button>
         </div>
 
         <div class="col-md-6">
@@ -157,12 +164,45 @@
 .btn-favorito:active {
     transform: scale(0.9);
 }
+
+.btn-like {
+    position: absolute;
+    top: 60px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #000000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-like.active {
+    color: #1900ff;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.btn-like:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 1);
+}
+
+.btn-like:active {
+    transform: scale(0.9);
+}
 </style>
 
 <!-- Script -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const boton = document.getElementById("btn-favorito");
+    const boton_like = document.getElementById("btn-like");
     const usuarioCorreo = "{{ usuario_correo|default:'' }}"; // puede estar vacío si no hay sesión
 
     boton.addEventListener("click", async () => {
@@ -190,6 +230,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 boton.classList.toggle("active");
                 const activo = boton.classList.contains("active");
                 boton.title = activo ? "Quitar de favoritos" : "Agregar a favoritos";
+            } else {
+                console.error("Error al actualizar favorito");
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+        }
+    });
+
+    boton_like.addEventListener("click", async () => {
+        if (!usuarioCorreo) {
+            window.location.href = "{% url 'login' %}?next={{ request.get_full_path }}";
+            return;
+        }
+
+        const recetaId = boton_like.dataset.recetaId;
+
+        try {
+            const response = await fetch("{% url 'insertar_like' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({
+                    receta_id: recetaId,
+                    usuario_correo: usuarioCorreo,
+                }),
+            });
+
+            if (response.ok) {
+                boton_like.classList.toggle("active");
+                const activo = boton_like.classList.contains("active");
+                boton_like.title = activo ? "Quitar de likes" : "Agregar a likes";
             } else {
                 console.error("Error al actualizar favorito");
             }

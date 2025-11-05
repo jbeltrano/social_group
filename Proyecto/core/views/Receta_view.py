@@ -6,6 +6,7 @@ from core.controllers.Controlador_receta import obtener_recetas_por_tiempo, busc
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria, insertar_receta_categoria, obtener_categorias_de_receta, eliminar_categorias_de_receta
 from core.controllers.Controlador_favorito import eliminar_favorito, obtener_recetas_favoritas_por_usuario as recetas_favoritas_usuario, insertar_favorito, es_favorito
+from core.controllers.Controlador_like import insertar_like, eliminar_like, es_like, obtener_recetas_like_por_usuario as recetas_like_usuario
 from core.views.Login_view import login_requerido
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
@@ -56,16 +57,16 @@ def detalle_receta(request, receta_id):
 
     usuario_correo = request.session.get("usuario_id")
     es_favorito_flag = False
+    es_like_flag = False
 
     if usuario_correo:
-        try:
-            es_favorito_flag = es_favorito(usuario_correo, receta_id)
-        except Exception as e:
-            print("Error verificando favorito:", e)
+        es_favorito_flag = es_favorito(usuario_correo, receta_id)
+        es_like_flag = es_like(usuario_correo, receta_id)
 
     context = {
         'receta': receta,
         'es_favorito': es_favorito_flag,
+        'es_like': es_like_flag,
         'usuario_correo': usuario_correo  # puede ser None si no hay sesión
     }
     return render(request, 'recetas/detalle_receta.html', context)
@@ -271,6 +272,52 @@ def insertar_favorito_view(request):
             eliminar_favorito(usuario_correo, receta_id)
         else:
             insertar_favorito(usuario_correo, receta_id)
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+@login_requerido
+def recetas_like_view(request):
+
+    usuario_id = request.session.get('usuario_id')
+    page = request.GET.get('page', 1)
+    
+    recetas = recetas_like_usuario(usuario_id)
+    # Configurar la paginación
+    paginator = Paginator(recetas, 45)  # 45 recetas por página
+    recetas_pagina = paginator.get_page(page)
+    
+    context = {
+        'recetas': recetas_pagina,
+    }
+    return render(request, 'recetas/recetas_like.html', context)
+
+@csrf_exempt
+@login_requerido
+def eliminar_like_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        receta_id = data.get("receta_id")
+        usuario_correo = request.session.get("usuario_id")
+        eliminar_like(usuario_correo, receta_id)
+        return JsonResponse({"success": True})
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+@csrf_exempt
+def insertar_like_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        receta_id = data.get("receta_id")
+        usuario_correo = request.session.get("usuario_id")
+        if not usuario_correo:
+            return JsonResponse({"error": "Usuario no autenticado"}, status=401)
+
+        if es_like(usuario_correo, receta_id):
+            eliminar_like(usuario_correo, receta_id)
+        else:
+            insertar_like(usuario_correo, receta_id)
 
         return JsonResponse({"success": True})
 
