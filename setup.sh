@@ -42,36 +42,14 @@ pip install --upgrade pip
 pip install -r Backend/requirements.txt
 
 
-# 5. Crear proyecto Django si no existe
-if [ ! -f "manage.py" ]; then
-  echo "🎯 Creando proyecto Django..."
-  django-admin startproject CookShare .
-  echo "✅ Proyecto Django creado"
-fi
-
-# 6. Crear app core si no existe
-if [ ! -d "core" ]; then
-  echo "🧩 Creando app core..."
-  python manage.py startapp core
-  echo "✅ App core creada"
-fi
-
-
-# 7. Crear estructura MVC dentro del modulo core
-mkdir core/models core/controllers core/views core/templates
-
-
-# 8. Crear archivo __init__.py en cada carpeta para que Python las reconozca como paquetes
-touch core/models/__init__.py
-touch core/controllers/__init__.py
-touch core/views/__init__.py
-touch core/templates/__init__.py
-
-# 9. Aplicar migraciones 
+# 5. Aplicar migraciones 
 echo "🗃️  Aplicando migraciones de Django..."
 python manage.py makemigrations
 python manage.py migrate
 
+# 6. Ejecutar tests
+echo "🧪 Ejecutando tests de Django..."
+pytest
 
 echo ""
 echo "✅ Setup finalizado."

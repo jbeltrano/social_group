@@ -2,3 +2,8 @@ Django
 mysqlclient
 python-dotenv
 Pillow
+pytest
+pytest-django
+pylint
+pylint-django
+pylint-plugin-utils
