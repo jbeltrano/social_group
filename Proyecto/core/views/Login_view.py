@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from core.controllers import Controlador_usuario
-from core.controllers import Controlador_sesion
+from core.controllers import Controlador_login
 from core.models.Usuario import Usuario
 from functools import wraps
 
@@ -23,14 +23,14 @@ def login_view(request):
         username = request.POST["username"]
         password = request.POST["password"]
 
-        error = Controlador_sesion.verificar_login(username, password)
+        error = Controlador_login.verificar_login(username, password)
 
         if error:
             messages.error(request, error)
             return render(request, "login/login.html")
         
         usuario = Controlador_usuario.obtener_usuario(correo=username)
-        Controlador_sesion.iniciar_sesion(request, usuario)
+        Controlador_login.iniciar_sesion(request, usuario)
         next_url = request.POST.get("next") or "/"
         print(request.POST.get("next"))
         return redirect(next_url)
@@ -55,7 +55,7 @@ def registro_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
-        errores = Controlador_sesion.verificar_registro(nombre, apellido, correo, password, confirm_password)
+        errores = Controlador_login.verificar_registro(nombre, apellido, correo, password, confirm_password)
 
         if errores:
             for mensaje in errores:
@@ -75,7 +75,7 @@ def registro_view(request):
         )
         
         # Iniciar sesión automáticamente
-        Controlador_sesion.iniciar_sesion(request, usuario)
+        Controlador_login.iniciar_sesion(request, usuario)
         
         messages.success(request, "Cuenta creada exitosamente")
         next_url = request.POST.get("next") or "/"

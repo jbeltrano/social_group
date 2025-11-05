@@ -6,7 +6,7 @@ def verificar_login(correo, contraseña):
     error = None
     try:
         usuario = obtener_usuario(correo=correo)
-        if not validar_contraseña(usuario, contraseña):
+        if not validar_contraseña(contraseña,usuario.contraseña):
             error = "Contraseña incorrecta"
     except Usuario.DoesNotExist:
         error = "Usuario no encontrado"

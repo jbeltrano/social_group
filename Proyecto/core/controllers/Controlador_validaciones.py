@@ -12,8 +12,8 @@ def validar_correo(correo):
 def validar_obligatoriedad(campos):
     return all(campos)
 
-def validar_contraseña(usuario, contraseña):
-    return check_password(contraseña, usuario.contraseña)
+def validar_contraseña(contraseña_ingresada, contraseña_db):
+    return check_password(contraseña_ingresada, contraseña_db)
 
 def validar_longitud_contraseña(contraseña, longitud_minima=8):
     return len(contraseña) >= longitud_minima
