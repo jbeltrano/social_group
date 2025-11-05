@@ -1,7 +1,8 @@
 from core.models.Receta_categoria import Receta_categoria
 from core.models.Receta import Receta
 from core.models.Categoria import Categoria
-from core.controllers import Controlador_receta, Controlador_categoria
+from core.controllers import Controlador_receta
+from core.controllers import Controlador_categoria
 
 def obtener_recetas_categorias():
     return Receta_categoria.objects.all()
