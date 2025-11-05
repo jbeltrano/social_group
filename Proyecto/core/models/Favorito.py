@@ -7,7 +7,6 @@ class Favorito(models.Model):
         'Receta',
         db_column='receta_id',
         on_delete=models.CASCADE,
-        primary_key=True,
     )
     usuario = models.ForeignKey(
         'Usuario',

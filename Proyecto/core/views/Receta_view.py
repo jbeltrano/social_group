@@ -264,9 +264,6 @@ def insertar_favorito_view(request):
         data = json.loads(request.body)
         receta_id = data.get("receta_id")
         usuario_correo = request.session.get("usuario_id")
-
-        print("Usuario correo:", usuario_correo)
-        print("Receta ID:", receta_id)
         if not usuario_correo:
             return JsonResponse({"error": "Usuario no autenticado"}, status=401)
 
