@@ -1,3 +1,14 @@
+# Ignorar archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignorar configuraciones locales
+*.log
+*.pot
+*.pyc
+*.pyo
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
