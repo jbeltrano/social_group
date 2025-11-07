@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*/migrations/__pycache__/
 
 # Ignorar configuraciones locales
 *.log
