@@ -1,8 +1,7 @@
 from core.models.Receta_categoria import Receta_categoria
 from core.models.Receta import Receta
-from core.models.Categoria import Categoria
-from core.controllers import Controlador_receta
-from core.controllers import Controlador_categoria
+from . import Controlador_receta
+from . import Controlador_categoria
 
 def obtener_recetas_categorias():
     return Receta_categoria.objects.all()
@@ -11,7 +10,9 @@ def obtener_receta_categoria(categoria_id):
     return Receta_categoria.objects.filter(categoria_id=categoria_id)
 
 def obtener_categorias_de_receta(receta_id):
-    return Receta_categoria.objects.filter(receta_id=receta_id).all().values_list('categoria_id', flat=True)
+    return Receta_categoria.objects.filter(
+        receta_id=receta_id
+    ).all().values_list('categoria_id', flat=True)
 
 def insertar_receta_categoria(receta_id, categoria_id):
 
@@ -53,5 +54,6 @@ def obtener_recetas_por_categoria(categoria_id, usuario_id=None):
             usuario__correo=usuario_id
         ).order_by('-calificacion', '-creacion')
 
-    return Receta.objects.filter(receta_categoria__categoria_id=categoria_id).order_by('-calificacion', '-creacion')
-
+    return Receta.objects.filter(
+        receta_categoria__categoria_id=categoria_id
+        ).order_by('-calificacion', '-creacion')

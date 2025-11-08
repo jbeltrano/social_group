@@ -12,7 +12,8 @@ disable=
     invalid-name,
     too-few-public-methods,
     missing-docstring,
-    trailing-whitespace
+    non-ascii-name,
+    non-ascii-module-import
 
 [FORMAT]
 max-line-length=100

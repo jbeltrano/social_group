@@ -19,7 +19,7 @@ def insertar_calificacion(receta_id, usuario_correo, puntaje, comentario=None):
 
     if not receta or not usuario:
         return None
-    
+
     return Calificacion.objects.create(
         receta=receta,
         usuario=usuario,
@@ -34,7 +34,7 @@ def actualizar_calificacion(receta_id, usuario_correo, puntaje=None, comentario=
 
     if not calificacion:
         return None
-    
+
     if puntaje is not None:
         calificacion.puntaje = puntaje
 

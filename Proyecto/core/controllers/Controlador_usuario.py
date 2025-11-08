@@ -1,5 +1,5 @@
-from core.models.Usuario import Usuario
 from django.contrib.auth.hashers import make_password
+from core.models.Usuario import Usuario
 
 def obtener_todos_usuarios():
     return Usuario.objects.all()
@@ -13,7 +13,7 @@ def usuario_existe(correo):
 def insertar_usuario(correo, nombre, contraseña):
 
     contraseña = make_password(contraseña)
-    
+
     return Usuario.objects.create(
         nombre=nombre,
         correo=correo,
@@ -27,7 +27,7 @@ def actualizar_usuario(correo, nombre=None, contraseña=None):
 
     if not usuario:
         return None
-    
+
     if nombre is not None:
         usuario.nombre = nombre
 

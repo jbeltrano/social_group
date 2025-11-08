@@ -1,6 +1,9 @@
-from .Controlador_usuario import obtener_usuario
-from .Controlador_validaciones import validar_correo, validar_contraseña, validar_obligatoriedad, validar_longitud_contraseña
 from core.models.Usuario import Usuario
+from .Controlador_usuario import obtener_usuario
+from .Controlador_validar_login import validar_correo
+from .Controlador_validar_login import validar_contraseña
+from .Controlador_validar_login import validar_obligatoriedad
+from .Controlador_validar_login import validar_longitud_contraseña
 
 def verificar_login(correo, contraseña):
     error = None
@@ -11,8 +14,8 @@ def verificar_login(correo, contraseña):
     except Usuario.DoesNotExist:
         error = "Usuario no encontrado"
     return error
-    
-  
+
+
 def verificar_registro(nombre, apellido, correo, contraseña, contraseña_confirmada):
     errores = []
 
@@ -28,7 +31,7 @@ def verificar_registro(nombre, apellido, correo, contraseña, contraseña_confir
     if not validar_longitud_contraseña(contraseña):
         errores.append("La contraseña debe tener al menos 8 caracteres.")
 
-    return (errores)
+    return errores
 
 def iniciar_sesion(request, usuario):
     request.session["usuario_id"] = usuario.correo

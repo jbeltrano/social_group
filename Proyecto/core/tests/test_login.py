@@ -1,7 +1,7 @@
 import pytest
-from core.controllers.Controlador_validaciones import validar_obligatoriedad
-from core.controllers.Controlador_validaciones import validar_correo
-from core.controllers.Controlador_validaciones import validar_longitud_contraseña
+from core.controllers.Controlador_validar_login import validar_obligatoriedad
+from core.controllers.Controlador_validar_login import validar_correo
+from core.controllers.Controlador_validar_login import validar_longitud_contraseña
 from core.controllers.Controlador_login import verificar_registro
 
 @pytest.mark.parametrize(
