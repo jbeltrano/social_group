@@ -34,14 +34,18 @@ def actualizar_calificacion(receta_id, usuario_correo, puntaje=None, comentario=
 
     if not calificacion:
         return None
-    
+
     if puntaje is not None:
         calificacion.puntaje = puntaje
 
     if comentario is not None:
         calificacion.comentario = comentario
 
-    calificacion = Calificacion.objects.filter(receta_id=receta_id, usuario_id=usuario_correo).update(puntaje=calificacion.puntaje, comentario=calificacion.comentario)
+    calificacion = Calificacion.objects.filter(
+        receta_id=receta_id, usuario_id=usuario_correo
+    ).update(
+        puntaje=calificacion.puntaje, comentario=calificacion.comentario
+    )
     return calificacion
 
 

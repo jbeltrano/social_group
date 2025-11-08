@@ -346,11 +346,16 @@ def insertar_comentario_view(request):
         receta_id = data.get("receta_id")
         texto = data.get("texto")
         calificacion = int(data.get("calificacion"))
-        
+
         if not es_calificacion(receta_id, usuario_correo):
             insertar_calificacion(receta_id, usuario_correo, calificacion, comentario=texto)
         else:
-            actualizar_calificacion(receta_id, usuario_correo, puntaje=calificacion, comentario=texto)
+            actualizar_calificacion(
+                receta_id,
+                usuario_correo,
+                puntaje=calificacion,
+                comentario=texto
+            )
         return JsonResponse({"success": True})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
