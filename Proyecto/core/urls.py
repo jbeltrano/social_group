@@ -117,4 +117,11 @@ urlpatterns = [
         RedirectView.as_view(
         url='/static/core/favicon.ico')
     ),
+
+    # URLs de comentarios
+    path(
+        'insertar_comentario/',
+        Receta_view.insertar_comentario_view,
+        name='insertar_comentario'
+    ),
 ]

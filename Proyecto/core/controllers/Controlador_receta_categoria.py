@@ -52,8 +52,8 @@ def obtener_recetas_por_categoria(categoria_id, usuario_id=None):
         return Receta.objects.filter(
             receta_categoria__categoria_id=categoria_id,
             usuario__correo=usuario_id
-        ).order_by('-calificacion', '-creacion')
+        ).order_by('-calificacion_avg', '-creacion')
 
     return Receta.objects.filter(
         receta_categoria__categoria_id=categoria_id
-        ).order_by('-calificacion', '-creacion')
+        ).order_by('-calificacion_avg', '-creacion')

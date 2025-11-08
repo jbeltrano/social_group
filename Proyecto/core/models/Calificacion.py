@@ -7,6 +7,7 @@ class Calificacion(models.Model):
         'Receta',
         db_column='receta_id',                 # columna real en la base de datos
         on_delete=models.CASCADE,
+        primary_key=True
     )
     usuario = models.ForeignKey(
         'Usuario',
@@ -20,4 +21,4 @@ class Calificacion(models.Model):
     class Meta:
         managed = False     # Django no la recreará
         db_table = 'calificacion'
-        unique_together = (('receta_id', 'usuario_correo'),)
+        unique_together = (('receta', 'usuario'),)

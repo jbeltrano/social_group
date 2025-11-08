@@ -13,7 +13,7 @@ def eliminar_favorito(usuario_correo, receta_id):
 def obtener_recetas_favoritas_por_usuario(usuario_correo):
     return Receta.objects.filter(
         favorito__usuario__correo=usuario_correo
-    ).order_by('-calificacion', '-creacion')
+    ).order_by('-calificacion_avg', '-creacion')
 
 def es_favorito(usuario_correo, receta_id):
     return Favorito.objects.filter(usuario__correo=usuario_correo, receta__id=receta_id).exists()

@@ -10,7 +10,7 @@ def obtener_receta_vacia():
     return receta
 
 def obtener_recetas():
-    return Receta.objects.all().order_by('-calificacion', '-creacion')
+    return Receta.objects.all().order_by('-calificacion_avg', '-creacion')
 
 
 def obtener_receta(receta_id):

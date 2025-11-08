@@ -27,6 +27,10 @@ from core.controllers.Controlador_like import insertar_like
 from core.controllers.Controlador_like import eliminar_like
 from core.controllers.Controlador_like import es_like
 from core.controllers.Controlador_like import obtener_recetas_like_por_usuario
+from core.controllers.Controlador_calificacion import obtener_calificaciones_por_receta
+from core.controllers.Controlador_calificacion import insertar_calificacion
+from core.controllers.Controlador_calificacion import actualizar_calificacion
+from core.controllers.Controlador_calificacion import es_calificacion
 from .Login_view import login_requerido
 
 
@@ -80,12 +84,17 @@ def detalle_receta(request, receta_id):
         es_favorito_flag = es_favorito(usuario_correo, receta_id)
         es_like_flag = es_like(usuario_correo, receta_id)
 
+    # ✅ Obtener comentarios desde tu controlador
+    comentarios = obtener_calificaciones_por_receta(receta_id)
+
     context = {
         'receta': receta,
+        'comentarios': comentarios,
         'es_favorito': es_favorito_flag,
         'es_like': es_like_flag,
         'usuario_correo': usuario_correo  # puede ser None si no hay sesión
     }
+
     return render(request, 'recetas/detalle_receta.html', context)
 
 
@@ -326,6 +335,22 @@ def insertar_like_view(request):
         else:
             insertar_like(usuario_correo, receta_id)
 
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+def insertar_comentario_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        usuario_correo = request.session.get("usuario_id")
+        receta_id = data.get("receta_id")
+        texto = data.get("texto")
+        calificacion = int(data.get("calificacion"))
+        
+        if not es_calificacion(receta_id, usuario_correo):
+            insertar_calificacion(receta_id, usuario_correo, calificacion, comentario=texto)
+        else:
+            actualizar_calificacion(receta_id, usuario_correo, puntaje=calificacion, comentario=texto)
         return JsonResponse({"success": True})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
