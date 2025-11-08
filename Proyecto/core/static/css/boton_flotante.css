@@ -1,0 +1,24 @@
+.btn-flotante {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none; /* 🔹 Elimina la línea del enlace */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+.btn-flotante:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+    text-decoration: none; /* 🔹 Asegura que no aparezca al hacer hover */
+}

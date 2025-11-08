@@ -3,6 +3,8 @@
 {% load recipe_filters %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/detalle_receta.css' %}">
+
 <div class="container mt-4">
     <div class="row">
         <!-- Imagen y botón de favorito -->
@@ -133,19 +135,27 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <textarea id="comentario-texto" class="form-control mb-3" rows="3"
-                        placeholder="Área para escribir comentario"></textarea>
+                        placeholder="Área para escribir comentario"
+                        {% if calificacion_usuario %}
+                            >{{ calificacion_usuario.comentario }}</textarea>
+                        {% else %}
+                            ></textarea>
+                        {% endif %}
 
-                    <!-- Calificación por estrellas -->
                     <div class="mb-3 text-center">
                         <span class="text-muted">Califica esta receta:</span>
                         <div id="estrellas-calificacion" class="mt-2">
                             {% for i in "12345"|make_list %}
-                            <i class="far fa-star text-warning estrella" data-value="{{ forloop.counter }}"></i>
+                                {% if calificacion_usuario and forloop.counter <= calificacion_usuario.puntaje %}
+                                    <i class="fas fa-star text-warning estrella" data-value="{{ forloop.counter }}"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning estrella" data-value="{{ forloop.counter }}"></i>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
 
-                    <button id="btn-publicar" class="btn btn-warning text-white px-4">
+                    <button id="btn-publicar" class="btn btn-publicar px-4">
                         Publicar
                     </button>
                 </div>
@@ -191,27 +201,37 @@
             const estrellas = document.querySelectorAll(".estrella");
             const btnPublicar = document.getElementById("btn-publicar");
             const comentarioTexto = document.getElementById("comentario-texto");
-            let calificacionSeleccionada = 0;
+            
+            // ⭐️ Inicializa la calificación seleccionada con el valor precargado (0 si no existe)
+            let calificacionSeleccionada = parseInt("{{ calificacion_usuario.puntaje|default:0 }}"); 
 
-            // Efecto hover y selección de estrellas
+            // Función para actualizar visualmente el estado de las estrellas
+            const actualizarEstrellas = (puntaje) => {
+                estrellas.forEach(e => {
+                    const eValor = parseInt(e.dataset.value);
+                    e.classList.toggle("fas", eValor <= puntaje);
+                    e.classList.toggle("far", eValor > puntaje);
+                });
+            };
+
+            // 1. Aplicar la calificación inicial al cargar la página
+            actualizarEstrellas(calificacionSeleccionada);
+
+            // 2. Efecto hover y selección de estrellas
             estrellas.forEach(estrella => {
+                
+                // Efecto Hover (rellenar al pasar el mouse)
                 estrella.addEventListener("mouseover", () => {
                     const valor = parseInt(estrella.dataset.value);
-                    estrellas.forEach(e => {
-                        const eValor = parseInt(e.dataset.value);
-                        e.classList.toggle("fas", eValor <= valor);
-                        e.classList.toggle("far", eValor > valor);
-                    });
+                    actualizarEstrellas(valor);
                 });
 
+                // Restaurar la calificación seleccionada al quitar el mouse
                 estrella.addEventListener("mouseout", () => {
-                    estrellas.forEach(e => {
-                        const eValor = parseInt(e.dataset.value);
-                        e.classList.toggle("fas", eValor <= calificacionSeleccionada);
-                        e.classList.toggle("far", eValor > calificacionSeleccionada);
-                    });
+                    actualizarEstrellas(calificacionSeleccionada);
                 });
 
+                // Manejar el clic (selección definitiva)
                 estrella.addEventListener("click", () => {
                     if (!usuarioCorreo) {
                         window.location.href = "{% url 'login' %}?next={{ request.get_full_path }}";
@@ -219,17 +239,12 @@
                     }
 
                     calificacionSeleccionada = parseInt(estrella.dataset.value);
-
-                    // Actualizar visualmente la selección después del clic
-                    estrellas.forEach(e => {
-                        const eValor = parseInt(e.dataset.value);
-                        e.classList.toggle("fas", eValor <= calificacionSeleccionada);
-                        e.classList.toggle("far", eValor > calificacionSeleccionada);
-                    });
+                    // Actualizar visualmente después del clic
+                    actualizarEstrellas(calificacionSeleccionada);
                 });
             });
 
-            // Publicar comentario
+            // 3. Publicar comentario
             btnPublicar.addEventListener("click", async () => {
                 if (!usuarioCorreo) {
                     window.location.href = "{% url 'login' %}?next={{ request.get_full_path }}";
@@ -237,7 +252,8 @@
                 }
 
                 const texto = comentarioTexto.value.trim();
-                if (!texto || calificacionSeleccionada === 0) {
+                // Ahora calificacionSeleccionada puede ser el valor precargado
+                if (!texto || calificacionSeleccionada === 0) { 
                     alert("Por favor, escribe un comentario y selecciona una calificación.");
                     return;
                 }
@@ -257,97 +273,17 @@
                 });
 
                 if (response.ok) {
+                    alert("✅ Comentario insertado con éxito");
                     location.reload();
                 } else {
-                    alert("Error al enviar el comentario.");
+                    alert("❌ Error al enviar el comentario.");
                 }
             });
         });
     </script>
 
-    <style>
-        .estrella {
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .estrella:hover {
-            transform: scale(1.2);
-        }
-    </style>
+
 </div>
-
-<!-- Estilos -->
-<style>
-/* Posiciona el botón sobre la imagen */
-.position-relative {
-    position: relative;
-}
-
-.btn-favorito {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: #000000;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-.btn-favorito.active {
-    color: #e63946;
-    background: rgba(255, 255, 255, 0.95);
-}
-
-.btn-favorito:hover {
-    transform: scale(1.15);
-    background: rgba(255, 255, 255, 1);
-}
-
-.btn-favorito:active {
-    transform: scale(0.9);
-}
-
-.btn-like {
-    position: absolute;
-    top: 60px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: #000000;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-.btn-like.active {
-    color: #1900ff;
-    background: rgba(255, 255, 255, 0.95);
-}
-
-.btn-like:hover {
-    transform: scale(1.15);
-    background: rgba(255, 255, 255, 1);
-}
-
-.btn-like:active {
-    transform: scale(0.9);
-}
-</style>
 
 <!-- Script -->
 <script>

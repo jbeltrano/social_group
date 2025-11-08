@@ -28,6 +28,7 @@ from core.controllers.Controlador_like import eliminar_like
 from core.controllers.Controlador_like import es_like
 from core.controllers.Controlador_like import obtener_recetas_like_por_usuario
 from core.controllers.Controlador_calificacion import obtener_calificaciones_por_receta
+from core.controllers.Controlador_calificacion import obtener_calificacion
 from core.controllers.Controlador_calificacion import insertar_calificacion
 from core.controllers.Controlador_calificacion import actualizar_calificacion
 from core.controllers.Controlador_calificacion import es_calificacion
@@ -79,10 +80,15 @@ def detalle_receta(request, receta_id):
     usuario_correo = request.session.get("usuario_id")
     es_favorito_flag = False
     es_like_flag = False
+    calificacion_usuario = None
 
     if usuario_correo:
         es_favorito_flag = es_favorito(usuario_correo, receta_id)
         es_like_flag = es_like(usuario_correo, receta_id)
+
+    if es_calificacion(receta_id, usuario_correo):
+        calificacion_usuario = obtener_calificacion(receta_id, usuario_correo)
+
 
     # ✅ Obtener comentarios desde tu controlador
     comentarios = obtener_calificaciones_por_receta(receta_id)
@@ -92,7 +98,8 @@ def detalle_receta(request, receta_id):
         'comentarios': comentarios,
         'es_favorito': es_favorito_flag,
         'es_like': es_like_flag,
-        'usuario_correo': usuario_correo  # puede ser None si no hay sesión
+        'usuario_correo': usuario_correo,  # puede ser None si no hay sesión
+        'calificacion_usuario': calificacion_usuario
     }
 
     return render(request, 'recetas/detalle_receta.html', context)

@@ -1,0 +1,79 @@
+.estrella {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.estrella:hover {
+    transform: scale(1.2);
+}
+/* Posiciona el botón sobre la imagen */
+.position-relative {
+    position: relative;
+}
+.btn-publicar {
+    color: white;
+    background: rgba(5, 61, 245, 0.8);
+
+}
+.btn-publicar:hover {
+    color: black;
+    border-color: rgba(5, 61, 245, 0.8);
+}
+.btn-favorito {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    /* ... el resto de los estilos del botón favorito ... */
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #000000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+.btn-favorito.active {
+    color: #e63946;
+    background: rgba(255, 255, 255, 0.95);
+}
+.btn-favorito:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 1);
+}
+.btn-favorito:active {
+    transform: scale(0.9);
+}
+.btn-like {
+    position: absolute;
+    top: 60px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    /* ... el resto de los estilos del botón like ... */
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #000000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+.btn-like.active {
+    color: #1900ff;
+    background: rgba(255, 255, 255, 0.95);
+}
+.btn-like:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 1);
+}
+.btn-like:active {
+    transform: scale(0.9);
+}
