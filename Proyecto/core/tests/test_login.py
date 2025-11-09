@@ -9,6 +9,7 @@ from core.controllers.Controlador_login import verificar_registro
     [
         ("Todos", "los","campos","tienen","valor", True),
         ("", "falta","un","unico","campo", False),
+        (" ", "falta","un","unico","campo", False),
         ("falta", "","un","campo","en otro lugar", False),
         ("falta", "un","","campo","en otro lugar", False),
         ("falta", "un","campo","","en otro lugar", False),
@@ -58,6 +59,7 @@ def test_validar_longitud_contraseña(password, resultado):
     [
         ("todos", "los","camopos@estan.com","completos","completos", []),
         ("", "falta","algun@campo.com","incompleto","incompleto", ["Todos los campos son obligatorios."]),
+        (" ", "falta","algun@campo.com","incompleto","incompleto", ["Todos los campos son obligatorios."]),
         ("El", "correo","no@.com","es valido","es valido", ["El correo electrónico no es válido."]),
         ("La", "contraseña","es@gmail.com","corta","corta", ["La contraseña debe tener al menos 8 caracteres."]),
         ("las", "contraseñas","son@gmail.com","igualiticas","no son igualiticas", ["Las contraseñas no coinciden."]),

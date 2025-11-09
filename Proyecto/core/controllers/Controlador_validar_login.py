@@ -9,8 +9,9 @@ def validar_correo(correo):
     except ValidationError:
         return False
 
+
 def validar_obligatoriedad(campos):
-    return all(campos)
+    return all(campo.strip() for campo in campos)
 
 
 def validar_contraseña(contraseña_ingresada, contraseña_db):

@@ -5,13 +5,17 @@ INSERT INTO usuario VALUES
 
 -- Insertar categorías
 INSERT INTO categoria (nombre) VALUES
-('Desayunos'),
-('Comida Mexicana'),
-('Postres'),
-('Comida Italiana'),
+('Entradas'),
+('Sopas y Cremas'),
+('Ensaladas'),
+('Plato Principal'),
 ('Comida Rápida'),
-('Saludable'),
-('Vegetariana');
+('Postres y Pasteles'),
+('Salsas y aderezos'),
+('Panes y masas'),
+('Bebidas'),
+('Saludables'),
+('Vegetariano');
 
 -- Insertar recetas (usando UNHEX para simular datos binarios de imagen)
 INSERT INTO receta (nombre, imagen, descripcion, ingredientes, pasos, tiempo, porcion, verificacion, usuario_correo) VALUES

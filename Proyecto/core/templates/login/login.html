@@ -1,8 +1,26 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Iniciar Sesión{% endblock %}
-
+<link rel="stylesheet" href="{% static 'css/mensajes.css' %}">
 {% block content %}
+<style>
+    /* ==== Estilo moderno para mensajes ==== */
+    .custom-message {
+        border-left: 6px solid;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .custom-message.success { border-color: #198754; background: #e9f7ef; }
+    .custom-message.error   { border-color: #dc3545; background: #fbeaea; }
+    .custom-message.warning { border-color: #ffc107; background: #fff8e5; }
+    .custom-message.info    { border-color: #0dcaf0; background: #e7f9fc; }
+
+    .custom-message i { margin-right: 8px; }
+</style>
+
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-6 col-lg-4">
@@ -10,33 +28,45 @@
                 <div class="card-body">
                     <h2 class="text-center mb-4">Iniciar Sesión</h2>
                     
+                    {# ==== MENSAJES BONITOS ==== #}
                     {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
+                        {% for message in messages %}
+                        <div class="custom-message {{ message.tags }}">
+                            {% if "success" in message.tags %}<i class="fas fa-check-circle"></i>{% endif %}
+                            {% if "error" in message.tags %}<i class="fas fa-times-circle"></i>{% endif %}
+                            {% if "warning" in message.tags %}<i class="fas fa-exclamation-circle"></i>{% endif %}
+                            {% if "info" in message.tags %}<i class="fas fa-info-circle"></i>{% endif %}
+                            {{ message }}
+                        </div>
+                        {% endfor %}
                     {% endif %}
 
                     <form method="POST" action="{% url 'login' %}">
                         {% csrf_token %}
 
                         <input type="hidden" name="next" value="{{ request.GET.next }}">
-                        
+
                         <div class="mb-3">
                             <label for="username" class="form-label">Correo electrónico</label>
                             <input type="email" class="form-control" id="username" name="username" required>
                         </div>
+
+                        <!-- ==== CONTRASEÑA CON MOSTRAR/OCULTAR ==== -->
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                         </div>
                     </form>
-                    
+
                     <div class="text-center mt-3">
                         <p class="mb-0">¿No tienes una cuenta?</p>
                         <a href="{% url 'registro' %}?next={{ request.GET.next|default:request.path }}" class="text-decoration-none">Regístrate aquí</a>
@@ -46,4 +76,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    function togglePassword(id, btn) {
+        const field = document.getElementById(id);
+        const icon = btn.querySelector("i");
+
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            field.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+</script>
+
 {% endblock %}

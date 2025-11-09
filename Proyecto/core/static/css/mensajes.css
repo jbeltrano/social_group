@@ -1,0 +1,18 @@
+/* ==== Estilo moderno para mensajes ==== */
+    .custom-message {
+        border-left: 6px solid;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .custom-message.success { border-color: #198754; background: #e9f7ef; }
+    .custom-message.error   { border-color: #dc3545; background: #fbeaea; }
+    .custom-message.warning { border-color: #ffc107; background: #fff8e5; }
+    .custom-message.info    { border-color: #0dcaf0; background: #e7f9fc; }
+    
+    .custom-message.success i { color: #198754; }
+    .custom-message.error i   { color: #dc3545; }
+    .custom-message.warning i { color: #d39e00; }
+    .custom-message.info i    { color: #0dcaf0; }

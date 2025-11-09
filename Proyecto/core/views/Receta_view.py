@@ -13,6 +13,7 @@ from core.controllers.Controlador_receta import buscar_recetas_usuario, actualiz
 from core.controllers.Controlador_receta import obtener_recetas_por_tiempo
 from core.controllers.Controlador_receta import buscar_recetas
 from core.controllers.Controlador_receta import eliminar_receta
+from core.controllers.Controlador_receta import convertir_tiempo_a_hora_minuto
 from core.controllers.Controlador_receta import obtener_receta_vacia
 from core.controllers.Controlador_categoria import obtener_categorias
 from core.controllers.Controlador_receta_categoria import obtener_recetas_por_categoria
@@ -195,6 +196,7 @@ def mis_recetas_view(request):
 def editar_receta_view(request, receta_id):
 
     receta = obtener_receta(receta_id)
+    hora_minuto = convertir_tiempo_a_hora_minuto(receta.tiempo)
 
     if not receta or receta.usuario.correo != request.session.get("usuario_id"):
         return redirect('mis_recetas')
@@ -232,6 +234,8 @@ def editar_receta_view(request, receta_id):
     context = {
         'receta': receta,
         'categorias': categorias,
+        'horas': hora_minuto[0],
+        'minutos': hora_minuto[1],
         'categorias_receta': list(categorias_receta)
     }
 

@@ -52,6 +52,14 @@ def registro_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
+        context = {
+            'nombre': nombre,
+            'apellido': apellido,
+            'correo': correo,
+            'contraseña': password,
+            'verificacion': confirm_password
+        }
+
         errores = Controlador_login.verificar_registro(
             nombre,
             apellido,
@@ -63,7 +71,8 @@ def registro_view(request):
         if errores:
             for mensaje in errores:
                 messages.error(request, mensaje)
-            return render(request, "login/registro.html")
+
+            return render(request, "login/registro.html",context)
 
         if Controlador_usuario.usuario_existe(correo):
             messages.error(request, "Este correo electrónico ya está registrado")
@@ -80,7 +89,6 @@ def registro_view(request):
         # Iniciar sesión automáticamente
         Controlador_login.iniciar_sesion(request, usuario)
 
-        messages.success(request, "Cuenta creada exitosamente")
         next_url = request.POST.get("next") or "/"
         return redirect(next_url)
 

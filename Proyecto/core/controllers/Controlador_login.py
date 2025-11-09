@@ -33,6 +33,7 @@ def verificar_registro(nombre, apellido, correo, contraseña, contraseña_confir
 
     return errores
 
+
 def iniciar_sesion(request, usuario):
     request.session["usuario_id"] = usuario.correo
     request.session["usuario_nombre"] = usuario.nombre

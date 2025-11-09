@@ -80,6 +80,7 @@ ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguido`) REFERENCES `u
 ALTER TABLE `usuario_seguidor` ADD FOREIGN KEY (`usuario_seguidor`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE;
 
 
+
 DELIMITER //
 
 CREATE TRIGGER tg_actualizar_calificacion_receta_insert
@@ -99,6 +100,7 @@ END //
 
 DELIMITER ;
 
+
 DELIMITER //
 
 CREATE TRIGGER tg_actualizar_calificacion_receta_update
@@ -114,6 +116,55 @@ BEGIN
     UPDATE receta
     SET calificacion = ROUND(nueva_calificacion)
     WHERE id = NEW.receta_id;
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER tg_actualizar_fecha_comentario
+BEFORE UPDATE ON calificacion
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha = NOW();
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER tg_actualizar_verificacion
+AFTER UPDATE ON calificacion
+FOR EACH ROW
+BEGIN
+    DECLARE cantidad INT;
+    DECLARE promedio FLOAT;
+
+    -- Obtener cantidad de calificaciones de la receta
+    SELECT COUNT(*)
+    INTO cantidad
+    FROM calificacion
+    WHERE receta_id = NEW.receta_id;
+
+    -- Obtener promedio de calificación
+    SELECT AVG(puntuacion)
+    INTO promedio
+    FROM calificacion
+    WHERE receta_id = NEW.receta_id;
+
+    -- Condición solicitada
+    IF cantidad > 10 AND promedio > 3 THEN
+        UPDATE receta
+        SET verificacion = TRUE
+        WHERE id = NEW.receta_id;
+    ELSE
+        -- (Opcional) Si quieres que vuelva a no verificada cuando no cumple
+        UPDATE receta
+        SET verificacion = FALSE
+        WHERE id = NEW.receta_id;
+    END IF;
 END //
 
 DELIMITER ;

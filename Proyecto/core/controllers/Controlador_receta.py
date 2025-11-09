@@ -48,13 +48,7 @@ def procesar_imagen(imagen_file, max_size=(800, 800)):
     return buffer.getvalue()
 
 
-def insertar_receta(
-        receta,
-        imagen_file,
-        hora,
-        minuto,
-        usuario_correo
-    ):
+def insertar_receta(receta, imagen_file, hora, minuto, usuario_correo):
 
     usuario = obtener_usuario(usuario_correo)
 
@@ -140,6 +134,14 @@ def convertir_hora_minuto_a_tiempo(hora, minuto):
 
     except (ValueError, TypeError):
         return "00:00:00"
+
+def convertir_tiempo_a_hora_minuto(tiempo):
+    tiempo_dividido = str(tiempo).split(":")
+
+    horas = int(tiempo_dividido[0])
+    minutos = int(tiempo_dividido[1])
+
+    return (horas, minutos)
 
 
 def buscar_recetas(recetas, query):
