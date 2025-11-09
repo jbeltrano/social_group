@@ -149,7 +149,7 @@ BEGIN
     WHERE receta_id = NEW.receta_id;
 
     -- Obtener promedio de calificación
-    SELECT AVG(puntuacion)
+    SELECT AVG(numero)
     INTO promedio
     FROM calificacion
     WHERE receta_id = NEW.receta_id;

@@ -273,10 +273,26 @@
                 });
 
                 if (response.ok) {
-                    alert("✅ Comentario insertado con éxito");
-                    location.reload();
+                    response.json().then(data => {
+
+                        if (data.accion === "insertado") {
+                            showModal("✅ Comentario insertado con éxito", "success");
+                        } else if (data.accion === "actualizado") {
+                            showModal("✅ Comentario actualizado correctamente", "info");
+                        } else {
+                            showModal("Acción completada", "info");
+                        }
+
+                        // Esperar a que el usuario cierre el modal para recargar
+                        document.querySelector(".modal-button").onclick = function() {
+                            closeModal();
+                            location.reload();
+                        };
+
+                    });
+
                 } else {
-                    alert("❌ Error al enviar el comentario.");
+                    showModal("❌ Error al enviar el comentario.", "error");
                 }
             });
         });
@@ -358,5 +374,99 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+</script>
+
+
+
+<div id="customModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span id="customModalIcon" class="modal-icon"></span>
+        <p id="customModalMessage"></p>
+        <button onclick="closeModal()" class="modal-button">Aceptar</button>
+    </div>
+</div>
+
+<style>
+    /* Fondo del modal */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(2px);
+        background: rgba(0,0,0,0.4);
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Contenido del modal */
+    .custom-modal-content {
+        background: #fff;
+        padding: 25px 30px;
+        border-radius: 14px;
+        text-align: center;
+        width: 320px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+        animation: popup 0.25s ease;
+    }
+
+    /* Icono */
+    .modal-icon {
+        font-size: 45px;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    /* Botón */
+    .modal-button {
+        margin-top: 20px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .modal-button:hover {
+        background: #0a58ca;
+    }
+
+    /* Animación suave */
+    @keyframes popup {
+        0%   { transform: scale(0.7); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<script>
+    function showModal(message, type = "info") {
+        const modal = document.getElementById("customModal");
+        const msg = document.getElementById("customModalMessage");
+        const icon = document.getElementById("customModalIcon");
+
+        msg.textContent = message;
+
+        // Estilo del icono según tipo
+        if (type === "success") {
+            icon.textContent = "✅";
+        } else if (type === "error") {
+            icon.textContent = "❌";
+        } else if (type === "warning") {
+            icon.textContent = "⚠️";
+        } else {
+            icon.textContent = "ℹ️";
+        }
+
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("customModal").style.display = "none";
+    }
 </script>
 {% endblock %}

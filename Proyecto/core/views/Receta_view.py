@@ -350,6 +350,7 @@ def insertar_like_view(request):
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
+
 def insertar_comentario_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -360,13 +361,14 @@ def insertar_comentario_view(request):
 
         if not es_calificacion(receta_id, usuario_correo):
             insertar_calificacion(receta_id, usuario_correo, calificacion, comentario=texto)
-        else:
-            actualizar_calificacion(
-                receta_id,
-                usuario_correo,
-                puntaje=calificacion,
-                comentario=texto
-            )
-        return JsonResponse({"success": True})
+            return JsonResponse({"success": True, "accion": "insertado"})
+
+        actualizar_calificacion(
+            receta_id,
+            usuario_correo,
+            puntaje=calificacion,
+            comentario=texto
+        )
+        return JsonResponse({"success": True, "accion": "actualizado"})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
