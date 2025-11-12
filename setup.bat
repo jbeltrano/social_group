@@ -1,63 +1,80 @@
 @echo off
-echo "🔧 Iniciando setup del proyecto Django + MySQL..."
+echo ==============================================
+echo "🔧 Iniciando setup del proyecto Django + SQLite3..."
+echo ==============================================
 
-rem 2. Levantar base de datos con Docker Compose
-echo "🐬 Levantando MySQL con Docker Compose..."
-docker compose up -d
+rem -------------------------------------------------
+rem 1. Crear entorno virtual y preparar dependencias
+rem -------------------------------------------------
 
-
-rem Esperar a que MySQL esté listo
-echo "⏳ Esperando a que MySQL esté listo..."
-timeout /t 60 > nul
-
-
-rem 3. Ejecutar el script SQL de inicialización (si existe)
-if exist "Proyecto/Backend/cmd/db/init.sql" (
-
-    echo "📄 Ejecutando script SQL de inicialización..."
-    docker exec -i mysql-demo-compose mysql -u root -prootpassword testdb < ./Proyecto/Backend/cmd/db/init.sql
-
-    echo "✅ Script SQL ejecutado"
-) else (
-    echo "⚠️  No se encontró init.sql en Proyecto/Backend/cmd/db/"
-)
-
-
-rem 4. Configurando entorno virtual y instalacion de dependencias de Python
 cd "Proyecto"
 
-rem Crear entorno virtual si no existe
 if not exist "venv" (
     echo "🌐 Creando entorno virtual..."
     python -m venv venv
     echo "✅ Entorno virtual creado"
 )
 
-rem Activar entorno virtual
 call venv\Scripts\activate.bat
 
-rem Instalar dependencias de Python
 echo "📦 Instalando dependencias de Python..."
 pip install --upgrade pip
 pip install -r Backend/requirements.txt
 
-rem 5. Aplicar migraciones 
-echo "🗃️  Aplicando migraciones de Django..."
+
+rem -------------------------------------------------
+rem 2. Crear base de datos SQLite e inicializar datos
+rem -------------------------------------------------
+
+set DB_PATH=Backend\db.sqlite3
+set INIT_SQL=Backend\cmd\db\init.sql
+
+echo "🗃️  Configurando base de datos SQLite..."
+if exist "%DB_PATH%" (
+    echo "⚠️  Eliminando base de datos anterior..."
+    del "%DB_PATH%"
+)
+
+echo "📄 Creando nueva base de datos SQLite..."
+python - <<END
+import sqlite3, os
+db_path = r"%DB_PATH%"
+sql_path = r"%INIT_SQL%"
+if os.path.exists(sql_path):
+    with open(sql_path, "r", encoding="utf-8") as f:
+        sql = f.read()
+    conn = sqlite3.connect(db_path)
+    conn.executescript(sql)
+    conn.close()
+    print("✅ Script SQL ejecutado correctamente.")
+else:
+    print("⚠️  No se encontró el archivo:", sql_path)
+END
+
+
+rem -------------------------------------------------
+rem 3. Aplicar migraciones y preparar Django
+rem -------------------------------------------------
+
+echo "🔧 Aplicando migraciones de Django..."
 python manage.py makemigrations
 python manage.py migrate
 
-rem 6. Ejecutar tests
+rem -------------------------------------------------
+rem 4. Ejecutar tests
+rem -------------------------------------------------
+
 echo "🧪 Ejecutando tests de Django..."
 pytest
 
 echo ""
-echo "✅ Setup finalizado."
+echo "✅ Setup completado correctamente."
 echo ""
 echo "📌 Próximos pasos:"
-echo "   1. Configurar la base de datos en CookShare/settings.py"
-echo "   2. Agregar 'core' a INSTALLED_APPS en CookShare/settings.py"
-echo "   3. Cargar las variables de entorno necesarias"
-echo "   4. python manage.py runserver # Iniciar servidor Django"
+echo "   1. Asegúrate de que DATABASES usa sqlite3 en settings.py"
+echo "   2. Puedes iniciar el servidor con:"
+echo "      python manage.py runserver"
 echo ""
 echo "🌐 Django estará disponible en: http://127.0.0.1:8000"
 echo "🔧 Panel admin en: http://127.0.0.1:8000/admin"
+echo ==============================================
