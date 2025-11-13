@@ -1,5 +1,5 @@
 import pytest
-from core.controllers.Controlador_comentarios import validar_comentario
+from core.controllers.controlador_validar_comentario import validar_comentario
 
 @pytest.mark.parametrize(
     "comentario, resultado",
