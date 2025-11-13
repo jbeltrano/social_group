@@ -7,49 +7,49 @@ from core.controllers.Controlador_receta import validar_receta
 @pytest.mark.parametrize(
     "nombre, ingredientes, pasos, resultado",
     [
-        # ✅ Caso válido
+        #  Caso válido
         (
             "Torta de chocolate",
             "harina\nhuevos\ncacao en polvo",
             "Mezclar todos los ingredientes y hornear por 45 minutos.",
             True,
         ),
-        # ❌ Nombre vacío
+        #  Nombre vacío
         (
             "",
             "harina\nhuevos",
             "Falta nombre",
             False,
         ),
-        # ❌ Ingredientes vacíos
+        #  Ingredientes vacíos
         (
             "Galletas",
             "",
             "No hay ingredientes",
             False,
         ),
-        # ❌ Pasos vacíos
+        #  Pasos vacíos
         (
             "Pizza",
             "masa\nqueso\nsalsa de tomate",
             "",
             False,
         ),
-        # ❌ Nombre con solo espacios
+        #  Nombre con solo espacios
         (
             "   ",
             "tomate\ncebolla\norégano",
             "Pasos válidos",
             False,
         ),
-        # ❌ Ingrediente vacío entre líneas
+        #  Ingrediente vacío entre líneas
         (
             "Ensalada",
             "lechuga\n\ntomate",
             "Cortar y mezclar todos los ingredientes frescos.",
             False,
         ),
-        # ✅ Ingredientes válidos con espacios adicionales
+        #  Ingredientes válidos con espacios adicionales
         (
             "Pan casero",
             "  harina  \n  agua  \n  levadura  ",
