@@ -63,7 +63,7 @@ def insertar_receta(receta, imagen_file, hora, minuto, usuario_correo):
 
     receta.usuario = usuario
     receta.tiempo = tiempo
-    if not validar_receta(receta):
+    if not validar_receta(receta.nombre, receta.ingredientes, receta.pasos):
         return None
 
     receta.save()

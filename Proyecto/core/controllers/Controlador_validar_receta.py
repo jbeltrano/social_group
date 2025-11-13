@@ -4,7 +4,7 @@ from core.models import Receta, Usuario
 from datetime import timedelta
 
 
-def validar_receta(receta):
+def validar_receta(nombre, ingredientes, pasos):
     """
     Valida los datos de una receta antes de guardarla.
 
@@ -14,9 +14,6 @@ def validar_receta(receta):
     Retorna:
         bool: True si todos los datos son válidos, False en caso contrario.
     """
-    nombre = receta.nombre
-    ingredientes = receta.ingredientes
-    pasos = receta.pasos
     
     # Validar nombre
     if not nombre or nombre.strip() == "":
