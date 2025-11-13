@@ -35,3 +35,29 @@ def validar_receta(nombre, ingredientes, pasos):
             return False
 
     return True
+
+
+def insertar_receta(receta):
+    """
+    Inserta la receta en la base de datos solo si es válida.
+    
+    Parámetros:
+        receta (Receta): Objeto modelo de Django.
+    
+    Retorna:
+        bool: True si se guardó, False si es inválida.
+    """
+
+    # Validar los campos de la receta usando la función validar_receta
+    if not validar_receta(
+        receta.nombre,
+        receta.ingredientes,  # puede ser string con saltos de línea o lista
+        receta.pasos
+    ):
+        # Aquí puedes agregar un mensaje de error o logging si quieres
+        print("Receta inválida: nombre, ingredientes o pasos incorrectos")
+        return False
+
+    # Guardar en la base de datos
+    receta.save()
+    return True
