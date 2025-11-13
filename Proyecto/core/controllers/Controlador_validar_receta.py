@@ -1,4 +1,8 @@
-# core/controllers/Controlador_recetas.py
+# core/controllers/Controlador_receta.py
+
+from core.models import Receta, Usuario
+from datetime import timedelta
+
 
 def validar_receta(nombre, ingredientes, pasos):
     """
@@ -37,27 +41,45 @@ def validar_receta(nombre, ingredientes, pasos):
     return True
 
 
-def insertar_receta(receta):
+def insertar_receta(receta, imagen_file=None, hora=0, minuto=0, usuario_correo=None):
     """
-    Inserta la receta en la base de datos solo si es válida.
-    
+    Inserta una receta en la base de datos con validación.
+    Esta versión acepta los mismos argumentos que usa tu vista 'formulario_receta'.
+
     Parámetros:
-        receta (Receta): Objeto modelo de Django.
-    
+        receta (Receta): Objeto del modelo Receta.
+        imagen_file (InMemoryUploadedFile, opcional): Imagen de la receta.
+        hora (int|str): Horas del tiempo de preparación.
+        minuto (int|str): Minutos del tiempo de preparación.
+        usuario_correo (str): Correo del usuario que crea la receta.
+
     Retorna:
-        bool: True si se guardó, False si es inválida.
+        Receta | None: Retorna la receta guardada si es válida, None si es inválida.
     """
 
-    # Validar los campos de la receta usando la función validar_receta
-    if not validar_receta(
-        receta.nombre,
-        receta.ingredientes,  # puede ser string con saltos de línea o lista
-        receta.pasos
-    ):
-        # Aquí puedes agregar un mensaje de error o logging si quieres
-        print("Receta inválida: nombre, ingredientes o pasos incorrectos")
-        return False
+    # Convertir hora y minuto a timedelta
+    try:
+        hora = int(hora) if hora else 0
+        minuto = int(minuto) if minuto else 0
+        receta.tiempo = timedelta(hours=hora, minutes=minuto)
+    except ValueError:
+        receta.tiempo = timedelta(minutes=0)
 
-    # Guardar en la base de datos
+    # Asignar imagen si se proporcionó
+    if imagen_file:
+        receta.imagen = imagen_file
+
+    # Asignar usuario si se proporcionó el correo
+    if usuario_correo:
+        usuario = Usuario.objects.filter(correo=usuario_correo).first()
+        if usuario:
+            receta.usuario = usuario
+
+    #  Validar antes de guardar
+    if not validar_receta(receta.nombre, receta.ingredientes, receta.pasos):
+        print(" Receta inválida: falta nombre, ingredientes o pasos.")
+        return None
+
+    # Guardar en base de datos
     receta.save()
-    return True
+    return receta
