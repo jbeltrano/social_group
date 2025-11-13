@@ -1,4 +1,18 @@
+# core/controllers/Controlador_recetas.py
+
 def validar_receta(nombre, ingredientes, pasos):
+    """
+    Valida los datos de una receta antes de guardarla.
+
+    Parámetros:
+        nombre (str): Nombre de la receta.
+        ingredientes (str | list[str]): Ingredientes como texto (con saltos de línea) o lista.
+        pasos (str): Pasos de preparación.
+
+    Retorna:
+        bool: True si todos los datos son válidos, False en caso contrario.
+    """
+
     # Validar nombre
     if not nombre or nombre.strip() == "":
         return False
@@ -7,14 +21,17 @@ def validar_receta(nombre, ingredientes, pasos):
     if not pasos or pasos.strip() == "":
         return False
 
-    # Validar ingredientes
+    # Si los ingredientes vienen como string, convertirlos en lista (separar por saltos de línea)
+    if isinstance(ingredientes, str):
+        ingredientes = [i.strip() for i in ingredientes.split("\n") if i.strip()]
+
+    # Validar que sea lista y no esté vacía
     if not isinstance(ingredientes, list) or len(ingredientes) == 0:
         return False
 
-    # Validar que cada ingrediente sea válido
+    # Validar cada ingrediente
     for ing in ingredientes:
         if not ing or str(ing).strip() == "":
             return False
 
     return True
-
