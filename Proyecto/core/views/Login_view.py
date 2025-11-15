@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.controllers import Controlador_usuario
 from core.controllers import Controlador_login
-from urllib.parse import urlencode
 
 def login_requerido(func):
     @wraps(func)
