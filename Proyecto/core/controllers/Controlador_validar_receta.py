@@ -1,7 +1,3 @@
-# core/controllers/Controlador_receta.py
-
-from core.models import Receta, Usuario
-from datetime import timedelta
 
 
 def validar_receta(nombre, ingredientes, pasos):
@@ -14,7 +10,7 @@ def validar_receta(nombre, ingredientes, pasos):
     Retorna:
         bool: True si todos los datos son válidos, False en caso contrario.
     """
-    
+
     # Validar nombre
     if not nombre or nombre.strip() == "":
         return False

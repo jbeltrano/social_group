@@ -125,6 +125,3 @@ urlpatterns = [
         name='insertar_comentario'
     ),
 ]
-
-
-
