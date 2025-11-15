@@ -3,12 +3,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.controllers import Controlador_usuario
 from core.controllers import Controlador_login
+from urllib.parse import urlencode
 
 def login_requerido(func):
     @wraps(func)
     def wrapper(request, *args, **kwargs):
         if "usuario_id" not in request.session:
-            return redirect("login")
+            next_url = request.get_full_path()
+            return redirect(f"/login/?next={next_url}")
         return func(request, *args, **kwargs)
     return wrapper
 
@@ -29,7 +31,6 @@ def login_view(request):
         usuario = Controlador_usuario.obtener_usuario(correo=username)
         Controlador_login.iniciar_sesion(request, usuario)
         next_url = request.POST.get("next") or "/"
-        print(request.POST.get("next"))
         return redirect(next_url)
 
     return render(request, "login/login.html")
@@ -38,12 +39,10 @@ def login_view(request):
 def logout_view(request):
 
     request.session.flush()  # Elimina toda la información de sesión
-    messages.success(request, "Has cerrado sesión exitosamente")
     return redirect("lista_recetas")
 
 
 def registro_view(request):
-
     if request.method == "POST":
 
         nombre = request.POST.get("nombre")

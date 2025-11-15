@@ -75,7 +75,7 @@
 
                     <div class="text-center mt-3">
                         <p class="mb-0">¿Ya tienes una cuenta?</p>
-                        <a href="{% url 'login' %}" class="text-decoration-none">Inicia sesión aquí</a>
+                        <a href="{% url 'login' %}?next={{ request.GET.next|urlencode }}" class="text-decoration-none">Inicia sesión aquí</a>
                     </div>
                 </div>
             </div>

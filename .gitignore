@@ -25,5 +25,5 @@ __pycache__/
 .env
 .env.local
 
-
+venv/
 # Archivos autogenerados

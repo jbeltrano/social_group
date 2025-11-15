@@ -69,7 +69,7 @@
 
                     <div class="text-center mt-3">
                         <p class="mb-0">¿No tienes una cuenta?</p>
-                        <a href="{% url 'registro' %}?next={{ request.GET.next|default:request.path }}" class="text-decoration-none">Regístrate aquí</a>
+                        <a href="{% url 'registro' %}?next={{ request.GET.next|urlencode }}" class="text-decoration-none">Regístrate aquí</a>
                     </div>
                 </div>
             </div>
