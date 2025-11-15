@@ -168,3 +168,16 @@ BEGIN
 END //
 
 DELIMITER ;
+
+INSERT INTO categoria (nombre) VALUES
+('Entradas'),
+('Sopas y Cremas'),
+('Ensaladas'),
+('Plato Principal'),
+('Comida Rápida'),
+('Postres y Pasteles'),
+('Salsas y aderezos'),
+('Panes y masas'),
+('Bebidas'),
+('Saludables'),
+('Vegetariano');
