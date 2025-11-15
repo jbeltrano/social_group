@@ -1,5 +1,3 @@
-
-
 def validar_receta(nombre, ingredientes, pasos):
     """
     Valida los datos de una receta antes de guardarla.
@@ -12,24 +10,49 @@ def validar_receta(nombre, ingredientes, pasos):
     """
 
     # Validar nombre
-    if not nombre or nombre.strip() == "":
+    if not validar_campos([nombre, ingredientes, pasos]):
         return False
 
-    # Validar pasos
-    if not pasos or pasos.strip() == "":
+    # Validar que no haya más de dos saltos de línea consecutivos
+    if not validar_saltos_linea(ingredientes) or not validar_saltos_linea(pasos):
         return False
 
-    # Si los ingredientes vienen como string, convertirlos en lista (separar por saltos de línea)
-    if isinstance(ingredientes, str):
-        ingredientes = [i.strip() for i in ingredientes.split("\n") if i.strip()]
+    ingredientes = convertir_a_lista(ingredientes)
+    pasos = convertir_a_lista(pasos)
 
-    # Validar que sea lista y no esté vacía
-    if not isinstance(ingredientes, list) or len(ingredientes) == 0:
+
+    return True
+
+
+def validar_saltos_linea(texto):
+
+    if not isinstance(texto, str):
         return False
 
-    # Validar cada ingrediente
-    for ing in ingredientes:
-        if not ing or str(ing).strip() == "":
+    if '\n\n' in texto:
+        return False
+
+    return True
+
+
+def convertir_a_lista(texto):
+    if isinstance(texto, str):
+        lista = [item.strip() for item in texto.split("\n") if item.strip()]
+        return lista
+    return texto
+
+
+def validar_campos(campos):
+    """
+    Valida que todos los campos en la lista no estén vacíos o sean None.
+
+    Parámetros:
+        campos (list): Lista de campos a validar.
+
+    Retorna:
+        bool: True si todos los campos son válidos, False en caso contrario.
+    """
+    for campo in campos:
+        if campo is None or str(campo).strip() == "":
             return False
-
     return True

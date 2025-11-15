@@ -1,5 +1,3 @@
-# tests/test_validar_receta.py
-
 import pytest
 from core.controllers.Controlador_receta import validar_receta
 

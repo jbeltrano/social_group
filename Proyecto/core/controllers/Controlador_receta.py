@@ -1,4 +1,5 @@
 import io
+import re
 from PIL import Image
 from django.db.models import Q
 from core.models.Receta import Receta
@@ -63,12 +64,15 @@ def insertar_receta(receta, imagen_file, hora, minuto, usuario_correo):
 
     receta.usuario = usuario
     receta.tiempo = tiempo
+
+    receta.ingredientes = normalizar_saltos_linea(receta.ingredientes)
+    receta.pasos = normalizar_saltos_linea(receta.pasos)
+
     if not validar_receta(receta.nombre, receta.ingredientes, receta.pasos):
         return None
 
     receta.save()
     return receta
-
 
 
 def actualizar_receta(receta, imagen_file=None, hora=None, minuto=None):
@@ -187,3 +191,10 @@ def buscar_recetas_favoritas_usuario(recetas, query, usuario_id):
         Q(ingredientes__icontains=query) |
         Q(porcion__icontains=query)
     ).filter(favoritos__usuario__correo = usuario_id)
+
+
+def normalizar_saltos_linea(texto):
+    if isinstance(texto, str):
+        # Reemplaza 2 o más saltos de línea consecutivos por uno solo
+        return re.sub(r'\n{2,}', '\n', texto)
+    return texto

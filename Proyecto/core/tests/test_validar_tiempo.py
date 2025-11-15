@@ -1,6 +1,5 @@
 import pytest
 from core.controllers.Controlador_validar_tiempo import validar_tiempo
-
 @pytest.mark.parametrize(
     "horas, minutos, valido",
     [

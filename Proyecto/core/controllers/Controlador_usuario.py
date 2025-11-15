@@ -13,6 +13,7 @@ def usuario_existe(correo):
 def insertar_usuario(correo, nombre, contraseña):
 
     contraseña = make_password(contraseña)
+    nombre = nombre.strip().title()
 
     return Usuario.objects.create(
         nombre=nombre,
