@@ -29,7 +29,7 @@ cd "Proyecto"
 rem Crear entorno virtual si no existe
 if not exist "venv" (
     echo "🌐 Creando entorno virtual..."
-    python -m venv venv
+    python3 -m venv venv
     echo "✅ Entorno virtual creado"
 )
 
