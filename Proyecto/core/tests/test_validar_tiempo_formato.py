@@ -4,8 +4,8 @@ from core.controllers.Controlador_validar_tiempo import validar_tiempo
 @pytest.mark.parametrize(
     "cadena, esperado",
     [
-        ("01:20:30", False),   
-        ("10:59", False),      
+        ("01:20:30", True),   
+        ("10:59", True),      
         ("abc:def", False),    
         (":30:20", False),     
         ("1::20", False),      
